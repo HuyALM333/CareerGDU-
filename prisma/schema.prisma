@@ -1,0 +1,404 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  password        String
+  role            String    @default("student") // admin, student, employer
+  phone           String?
+  avatar          String?   @db.LongText
+  emailVerified   Boolean   @default(false)
+  status          String    @default("active") // pending, active
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Student specific fields
+  studentId       String?
+  major           String?
+  faculty         String?
+  cohort          String?
+
+  // Employer specific fields
+  contactPerson   String?
+  companyName     String?
+  companyType     String?
+  companySize     String?
+  foreignCapital  Boolean?  @default(false)
+  province        String?
+  industry        String?
+  address         String?
+  website         String?
+  description     String? @db.Text
+  size            String?
+
+  // Auth/Recovery fields
+  emailOtp        String?
+  emailOtpExpires DateTime?
+  resetToken      String?
+  resetTokenExpiry DateTime?
+  passwordChangeOtp String?
+  passwordChangeOtpExpires DateTime?
+  
+  // 2FA Fields
+  totpSecret      String?
+  totpEnabled     Boolean?  @default(false)
+  pendingTotpSecret String?
+  recoveryCodes     Json?
+  pendingRecoveryCodes Json?
+  notificationSettings Json?
+  phoneVerified   Boolean @default(false)
+
+
+  // Relations
+  jobs            Job[]
+  applications    Application[]
+  userReviews     UserReview[]
+  savedJobs       SavedJob[]
+  notifications   Notification[]
+  reviewsLiked    ReviewLike[]
+  reviewComments  ReviewComment[]
+  contacts        Contact[]
+
+
+  @@map("users")
+}
+
+
+model PendingUser {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  password        String
+  role            String
+  phone           String?
+  avatar          String?   @db.LongText
+  emailVerified   Boolean   @default(false)
+  status          String    @default("pending")
+  createdAt       DateTime  @default(now())
+  
+  studentId       String?
+  major           String?
+
+  contactPerson   String?
+  companyName     String?
+  companyType     String?
+  companySize     String?
+  foreignCapital  Boolean?
+  province        String?
+  industry        String?
+  address         String?
+
+  emailOtp        String?
+  emailOtpExpires DateTime?
+
+  @@map("pending_users")
+}
+
+model Job {
+  id              String    @id @default(cuid())
+  title           String
+  company         String
+  website         String?
+  companyId       String?   
+  logo            String?
+  location        String
+  type            String
+  field           String
+  experience      String?
+  education       String?
+  salary          String?
+  salaryMin       Float?
+  salaryMax       Float?
+  isNegotiable    Boolean   @default(false)
+  deadline        String?   
+  description     String?   @db.Text
+  
+  requirements    Json?
+  benefits        Json?
+  detailedBenefits Json?
+  relatedMajors   Json?
+
+  postedAt        DateTime  @default(now())
+  approvedAt      DateTime?
+  publishAt       DateTime?
+  expiredAt       DateTime?
+  updatedAt       DateTime? @updatedAt
+  status          String    @default("pending") // pending, scheduled, published, rejected, expired, closed
+  applicants      Int       @default(0)
+  views           Int       @default(0)
+  quantity        Int       @default(1)
+  contactEmail    String?
+  contactPhone    String?
+  documentUrl     String? @db.Text
+  documentName    String?
+  logoFit         String?   @default("cover")
+  adminFeedback   String?   @db.Text
+
+
+  // Relations
+  creatorId       String
+  creator         User      @relation(fields: [creatorId], references: [id])
+  applications    Application[]
+  savedByUsers    SavedJob[]
+
+  @@map("jobs")
+}
+
+model Application {
+  id              String    @id @default(cuid())
+  jobId           String
+  userId          String    
+  
+  name            String
+  email           String
+  phone           String
+  studentId       String?
+  major           String?
+  gpa             String?
+  
+  coverLetter     String?   @db.Text
+  cvUrl           String?
+  cvName          String?
+  cvBase64        String?   @db.LongText
+  cvType          String?
+  cvOriginalName  String?
+
+  status          String    @default("pending") 
+  appliedAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  notes           String?   @db.Text
+
+  // Relations
+  job             Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([userId])
+  @@map("applications")
+}
+
+model Notification {
+  id              String    @id @default(cuid())
+  userId          String?   
+  targetRole      String?   
+  type            String    
+  title           String
+  message         String    @db.Text
+  link            String?
+  read            Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+
+  contactId       String?
+  applicationId   String?
+
+  // Relations
+  user            User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contact         Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([contactId])
+  @@map("notifications")
+}
+
+
+
+model Company {
+  id              String    @id @default(cuid())
+  name            String
+  logo            String?
+  website         String?
+  description     String?   @db.Text
+  industry        String?
+  size            String?
+  address         String?
+  status          String    @default("active")
+  verified        Boolean   @default(false)
+  rating          Float?    @default(5.0)
+  benefits        Json?
+  openPositions   Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+
+  @@map("companies")
+}
+
+model UserReview {
+  id              String    @id @default(cuid())
+  userId          String
+  rating          Int
+  comment         String    @db.Text
+  createdAt       DateTime  @default(now())
+  status          String    @default("pending")
+  likes           Int       @default(0)
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewLikes     ReviewLike[]
+  reviewComments  ReviewComment[]
+
+  @@map("user_reviews")
+}
+
+model ReviewLike {
+  id              String    @id @default(cuid())
+  reviewId        String
+  userId          String
+  createdAt       DateTime  @default(now())
+
+  review          UserReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@map("review_likes")
+}
+
+model ReviewComment {
+  id              String    @id @default(cuid())
+  reviewId        String
+  userId          String
+  comment         String    @db.Text
+  createdAt       DateTime  @default(now())
+
+  review          UserReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("review_comments")
+}
+
+model SavedJob {
+  id              String    @id @default(cuid())
+  userId          String
+  jobId           String
+  savedAt         DateTime  @default(now())
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job             Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@map("saved_jobs")
+}
+
+model Contact {
+  id              String    @id @default(cuid())
+  name            String
+  email           String
+  phone           String?
+  subject         String?
+  message         String    @db.Text
+  status          String    @default("new")
+  createdAt       DateTime  @default(now())
+  
+  userId          String?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifications   Notification[]
+
+  @@map("contacts")
+}
+
+
+model News {
+  id              String    @id @default(cuid())
+  title           String
+  content         String    @db.Text
+  category        String?
+  author          String?
+  slug            String    @unique
+  image           String?   @db.LongText
+  publishedAt     DateTime  @default(now())
+  status          String    @default("published")
+  views           Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("news")
+}
+
+
+model HeroSlide {
+  id              String    @id @default(cuid())
+  title           String
+  subtitle        String?
+  image           String    @db.LongText
+  link            String
+  cta             String    @default("Xem ngay")
+  order           Int       @default(0)
+  isActive        Boolean   @default(true)
+  page            String    @default("home")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("hero_slides")
+}
+
+
+model SiteConfig {
+  id              String    @id @default(cuid())
+  key             String    @unique
+  value           Json
+  description     String?   @db.Text
+  isActive        Boolean   @default(true)
+  updatedAt       DateTime  @updatedAt
+
+  @@map("site_configs")
+}
+
+
+model Report {
+  id              String    @id @default(cuid())
+  jobId           String    
+  jobTitle        String?
+  companyName     String?
+  reporterName    String?
+  reporterPhone   String?
+  reporterEmail   String?
+  reporterUserId  String?
+  content         String    @db.Text
+  status          String    @default("pending") 
+  adminResponse   String?   @db.Text
+  jobAction       String?   @default("none")
+  createdAt       DateTime  @default(now())
+  resolvedAt      DateTime?
+  
+  @@map("reports")
+}
+
+
+model Visitor {
+  id              String    @id @default(cuid())
+  ip              String
+  userAgent       String?   @db.Text
+  page            String    @default("/")
+  referrer        String?   @db.Text
+  userId          String?
+  userName        String?
+  country         String?
+  device          String?
+  visitedAt       DateTime  @default(now())
+
+  @@index([visitedAt])
+  @@map("visitors")
+}
+
+
+
+
+model DailyUpdate {
+
+
+  id              String    @id @default(cuid())
+  date            DateTime  @unique 
+  jobsAdded       Int       @default(0)
+  applications    Int       @default(0)
+  newUsers        Int       @default(0)
+
+  @@map("daily_updates")
+}

@@ -1,0 +1,1080 @@
+{
+    "metadata": {
+        "generated_for": "Đại học Gia Định",
+        "total_jobs": 25,
+        "schema_version": "1.1",
+        "last_updated": "2025-12-19"
+    },
+    "jobs": [
+        {
+            "_id": "job_1",
+            "title": "Frontend Developer Intern",
+            "company": "FPT Software",
+            "companyId": "2",
+            "logo": "/logos/fpt.png",
+            "website": "https://fpt-software.com",
+            "location": "Quận 7, TP.HCM",
+            "type": "internship",
+            "field": "it",
+            "salary": "5-8 triệu",
+            "deadline": "2025-12-30",
+            "postedAt": "2025-12-17",
+            "description": "Tham gia phát triển các dự án web sử dụng ReactJS, NextJS. Được đào tạo bài bản về quy trình phát triển phần mềm chuyên nghiệp.",
+            "skills": [
+                "ReactJS",
+                "TypeScript",
+                "HTML/CSS",
+                "Git"
+            ],
+            "requirements": [
+                "Sinh viên năm cuối hoặc mới tốt nghiệp CNTT",
+                "Có kiến thức cơ bản về HTML, CSS, JavaScript",
+                "Biết ReactJS là lợi thế"
+            ],
+            "benefits": [
+                "Trợ cấp thực tập hấp dẫn",
+                "Cơ hội trở thành nhân viên chính thức",
+                "Môi trường làm việc chuyên nghiệp"
+            ],
+            "status": "active",
+            "applicants": 45,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_2",
+            "title": "Business Analyst",
+            "company": "Techcombank",
+            "companyId": "1",
+            "logo": "/logos/techcombank.png",
+            "website": "https://www.techcombank.com.vn",
+            "location": "Hà Nội",
+            "type": "full-time",
+            "field": "finance",
+            "salary": "15-20 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-15",
+            "description": "Phân tích yêu cầu nghiệp vụ từ khách hàng. Viết tài liệu SRS, URD. Phối hợp với team Dev để triển khai sản phẩm.",
+            "skills": [
+                "BA",
+                "SQL",
+                "Communication",
+                "UML"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH chuyên ngành CNTT hoặc Kinh tế",
+                "Có chứng chỉ BA là lợi thế",
+                "Kỹ năng giao tiếp tốt"
+            ],
+            "benefits": [
+                "Mức lương hấp dẫn",
+                "Thưởng dự án, thưởng cuối năm",
+                "Môi trường Agile/Scrum"
+            ],
+            "status": "active",
+            "applicants": 32,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_3",
+            "title": "AI/ML Engineer",
+            "company": "TekNix Corporation",
+            "companyId": "5",
+            "logo": "/logos/teknix.png",
+            "website": "https://teknix.com",
+            "location": "Quận Bình Thạnh, TP.HCM",
+            "type": "full-time",
+            "field": "it",
+            "salary": "20-35 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-18",
+            "description": "Phát triển các mô hình Machine Learning và AI cho các sản phẩm của công ty.",
+            "skills": [
+                "Python",
+                "TensorFlow",
+                "PyTorch",
+                "Machine Learning"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH chuyên ngành CNTT, Khoa học dữ liệu",
+                "Có kinh nghiệm với framework ML/DL"
+            ],
+            "benefits": [
+                "Mức lương cạnh tranh",
+                "Làm việc với công nghệ mới nhất",
+                "Cơ hội thăng tiến"
+            ],
+            "status": "active",
+            "applicants": 12,
+            "education": "master",
+            "experience": "1-3"
+        },
+        {
+            "_id": "job_4",
+            "title": "Backend Developer",
+            "company": "FPT Software",
+            "companyId": "2",
+            "logo": "/logos/fpt.png",
+            "website": "https://career.fpt-software.com",
+            "location": "Hà Nội",
+            "type": "full-time",
+            "field": "it",
+            "salary": "18-30 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-21",
+            "description": "Thiết kế và phát triển các hệ thống Backend sử dụng Java/Spring Boot hoặc .NET Core. Tối ưu hóa hiệu năng hệ thống.",
+            "skills": [
+                "Java",
+                "Spring Boot",
+                ".NET",
+                "SQL"
+            ],
+            "requirements": [
+                "Có ít nhất 1 năm kinh nghiệm Backend",
+                "Thành thạo Java hoặc C#",
+                "Hiểu biết về Database"
+            ],
+            "benefits": [
+                "Gói thu nhập hấp dẫn",
+                "Bảo hiểm FPT Care",
+                "Cơ hội Onsite nước ngoài"
+            ],
+            "status": "active",
+            "applicants": 28,
+            "education": "bachelor",
+            "experience": "1-3"
+        },
+        {
+            "_id": "job_5",
+            "title": "Property Manager",
+            "company": "IPS Independent",
+            "companyId": "4",
+            "logo": "/logos/ips.png",
+            "location": "Bình Chánh, TP.HCM",
+            "type": "full-time",
+            "field": "sales",
+            "salary": "15-25 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-16",
+            "description": "Quản lý vận hành các tòa nhà chung cư, văn phòng. Đảm bảo dịch vụ quản lý BĐS đạt chất lượng cao nhất.",
+            "skills": [
+                "Quản lý BĐS",
+                "Communication",
+                "Problem Solving",
+                "Leadership"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH chuyên ngành Quản trị, Xây dựng",
+                "Có ít nhất 2 năm kinh nghiệm quản lý BĐS"
+            ],
+            "benefits": [
+                "Mức lương hấp dẫn + thưởng KPI",
+                "Bảo hiểm sức khỏe cao cấp",
+                "Thăng tiến rõ ràng"
+            ],
+            "status": "active",
+            "applicants": 12,
+            "education": "bachelor",
+            "experience": "2-5"
+        },
+        {
+            "_id": "job_7",
+            "title": "UI/UX Designer",
+            "company": "TekNix Corporation",
+            "companyId": "5",
+            "logo": "/logos/teknix.png",
+            "location": "Quận Bình Thạnh, TP.HCM",
+            "type": "full-time",
+            "field": "design",
+            "salary": "15-25 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-15",
+            "description": "Thiết kế giao diện người dùng cho các ứng dụng web và mobile.",
+            "skills": [
+                "Figma",
+                "Adobe XD",
+                "User Research",
+                "Prototyping"
+            ],
+            "requirements": [
+                "Tốt nghiệp chuyên ngành Thiết kế, CNTT",
+                "Có portfolio sản phẩm đã thiết kế"
+            ],
+            "benefits": [
+                "Môi trường sáng tạo, đổi mới",
+                "Flexible working hours",
+                "Thưởng dự án hấp dẫn"
+            ],
+            "status": "active",
+            "applicants": 22,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_8",
+            "title": "Credit Analyst",
+            "company": "Techcombank",
+            "companyId": "1",
+            "logo": "/logos/techcombank.png",
+            "location": "Hà Nội",
+            "type": "full-time",
+            "field": "finance",
+            "salary": "15-22 triệu",
+            "deadline": "2025-12-25",
+            "postedAt": "2025-12-14",
+            "description": "Phân tích hồ sơ tín dụng khách hàng doanh nghiệp. Đánh giá rủi ro và đề xuất quyết định cho vay.",
+            "skills": [
+                "Financial Analysis",
+                "Risk Assessment",
+                "Excel",
+                "Credit Analysis"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH chuyên ngành Tài chính, Ngân hàng",
+                "Có ít nhất 1 năm kinh nghiệm phân tích tín dụng"
+            ],
+            "benefits": [
+                "Lương thưởng hấp dẫn",
+                "Môi trường ngân hàng chuyên nghiệp",
+                "Thăng tiến trong ngành"
+            ],
+            "status": "active",
+            "applicants": 28,
+            "education": "bachelor",
+            "experience": "1-2"
+        },
+        {
+            "_id": "job_9",
+            "title": "Content Creator",
+            "company": "Cohota",
+            "companyId": "6",
+            "logo": "/logos/cohota.png",
+            "location": "TP. Thủ Đức, TP.HCM",
+            "type": "part-time",
+            "field": "marketing",
+            "salary": "8-12 triệu",
+            "deadline": "2025-12-30",
+            "postedAt": "2025-12-18",
+            "description": "Sáng tạo nội dung video, bài viết cho các khóa học online và kênh truyền thông.",
+            "skills": [
+                "Video Editing",
+                "Content Writing",
+                "Social Media",
+                "Canva"
+            ],
+            "requirements": [
+                "Sinh viên hoặc mới tốt nghiệp ngành Truyền thông",
+                "Có khả năng sáng tạo nội dung"
+            ],
+            "benefits": [
+                "Lịch làm việc linh hoạt",
+                "Phát triển kỹ năng content",
+                "Cơ hội làm full-time"
+            ],
+            "status": "active",
+            "applicants": 15,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_10",
+            "title": "Startup Coordinator",
+            "company": "ITP - ĐHQG-HCM",
+            "companyId": "3",
+            "logo": "/logos/itp.png",
+            "location": "TP. Thủ Đức, TP.HCM",
+            "type": "full-time",
+            "field": "marketing",
+            "salary": "12-18 triệu",
+            "deadline": "2025-12-30",
+            "postedAt": "2025-12-17",
+            "description": "Hỗ trợ các startup trong quá trình ươm tạo. Tổ chức các sự kiện, workshop về khởi nghiệp.",
+            "skills": [
+                "Event Management",
+                "Startup Ecosystem",
+                "Communication",
+                "Networking"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH các chuyên ngành liên quan",
+                "Am hiểu hệ sinh thái khởi nghiệp"
+            ],
+            "benefits": [
+                "Môi trường học thuật - sáng tạo",
+                "Kết nối với cộng đồng startup",
+                "Được tham gia sự kiện quốc tế"
+            ],
+            "status": "active",
+            "applicants": 8,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_11",
+            "title": "Mobile Developer (React Native)",
+            "company": "TekNix Corporation",
+            "companyId": "5",
+            "logo": "/logos/teknix.png",
+            "location": "Quận Bình Thạnh, TP.HCM",
+            "type": "full-time",
+            "field": "it",
+            "salary": "18-28 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-17",
+            "description": "Phát triển ứng dụng mobile đa nền tảng sử dụng React Native.",
+            "skills": [
+                "React Native",
+                "JavaScript",
+                "TypeScript",
+                "Mobile Development"
+            ],
+            "requirements": [
+                "Có kinh nghiệm React Native 1+ năm",
+                "Hiểu biết về iOS/Android development"
+            ],
+            "benefits": [
+                "Lương cạnh tranh",
+                "Được làm việc với sản phẩm đa dạng",
+                "Remote working"
+            ],
+            "status": "active",
+            "applicants": 19,
+            "education": "bachelor",
+            "experience": "1-2"
+        },
+        {
+            "_id": "job_12",
+            "title": "Data Analyst Intern",
+            "company": "Techcombank",
+            "companyId": "1",
+            "logo": "/logos/techcombank.png",
+            "location": "TP.HCM",
+            "type": "internship",
+            "field": "finance",
+            "salary": "6-10 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-16",
+            "description": "Hỗ trợ phân tích dữ liệu khách hàng, xây dựng báo cáo và dashboard.",
+            "skills": [
+                "SQL",
+                "Python",
+                "Excel",
+                "Power BI"
+            ],
+            "requirements": [
+                "Sinh viên năm cuối ngành Toán, Thống kê, CNTT",
+                "Có kiến thức về SQL, Python"
+            ],
+            "benefits": [
+                "Trợ cấp thực tập hấp dẫn",
+                "Được mentor bởi Senior Analyst",
+                "Cơ hội fulltime"
+            ],
+            "status": "active",
+            "applicants": 35,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_13",
+            "title": "Nhân viên Kinh doanh BĐS",
+            "company": "IPS Independent",
+            "companyId": "4",
+            "logo": "/logos/ips.png",
+            "location": "Quận 7, TP.HCM",
+            "type": "full-time",
+            "field": "sales",
+            "salary": "10-30 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-18",
+            "description": "Tư vấn và bán các sản phẩm bất động sản. Chăm sóc khách hàng tiềm năng.",
+            "skills": [
+                "Sales",
+                "Communication",
+                "Negotiation",
+                "Customer Service"
+            ],
+            "requirements": [
+                "Tốt nghiệp CĐ/ĐH các ngành",
+                "Có kỹ năng giao tiếp tốt",
+                "Năng động, ham học hỏi"
+            ],
+            "benefits": [
+                "Lương cứng + hoa hồng hấp dẫn",
+                "Đào tạo nghiệp vụ BĐS",
+                "Môi trường chuyên nghiệp"
+            ],
+            "status": "active",
+            "applicants": 42,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_14",
+            "title": "DevOps Engineer",
+            "company": "FPT Software",
+            "companyId": "2",
+            "logo": "/logos/fpt.png",
+            "location": "Hà Nội",
+            "type": "full-time",
+            "field": "it",
+            "salary": "22-38 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-17",
+            "description": "Xây dựng và quản lý hệ thống CI/CD, infrastructure cho các dự án lớn.",
+            "skills": [
+                "Docker",
+                "Kubernetes",
+                "AWS",
+                "CI/CD",
+                "Linux"
+            ],
+            "requirements": [
+                "Có 2+ năm kinh nghiệm DevOps",
+                "Thành thạo Docker, K8s",
+                "Hiểu biết về cloud services"
+            ],
+            "benefits": [
+                "Lương cao theo năng lực",
+                "Làm việc với công nghệ mới nhất",
+                "Chứng chỉ AWS miễn phí"
+            ],
+            "status": "active",
+            "applicants": 14,
+            "education": "bachelor",
+            "experience": "2-5"
+        },
+        {
+            "_id": "job_15",
+            "title": "Chuyên viên Tuyển dụng",
+            "company": "Cohota",
+            "companyId": "6",
+            "logo": "/logos/cohota.png",
+            "location": "TP. Thủ Đức, TP.HCM",
+            "type": "full-time",
+            "field": "hr",
+            "salary": "12-16 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-15",
+            "description": "Tuyển dụng nhân sự cho các vị trí trong công ty. Xây dựng thương hiệu nhà tuyển dụng.",
+            "skills": [
+                "Recruitment",
+                "HR",
+                "Communication",
+                "Sourcing"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH ngành Quản trị nhân sự, QTKD",
+                "Có 1+ năm kinh nghiệm tuyển dụng"
+            ],
+            "benefits": [
+                "Lương thưởng cạnh tranh",
+                "Môi trường EdTech năng động",
+                "Phát triển kỹ năng HR"
+            ],
+            "status": "active",
+            "applicants": 20,
+            "education": "bachelor",
+            "experience": "1-2"
+        },
+        {
+            "_id": "job_16",
+            "title": "Điều dưỡng viên",
+            "company": "IPS Independent",
+            "companyId": "4",
+            "logo": "/logos/ips.png",
+            "location": "Quận 2, TP.HCM",
+            "type": "full-time",
+            "field": "healthcare",
+            "salary": "10-15 triệu",
+            "deadline": "2025-12-30",
+            "postedAt": "2025-12-16",
+            "description": "Chăm sóc sức khỏe cư dân tại các tòa nhà chung cư cao cấp.",
+            "skills": [
+                "Điều dưỡng",
+                "Sơ cấp cứu",
+                "Chăm sóc sức khỏe"
+            ],
+            "requirements": [
+                "Tốt nghiệp CĐ/ĐH ngành Điều dưỡng",
+                "Có chứng chỉ hành nghề"
+            ],
+            "benefits": [
+                "Lương ổn định",
+                "Môi trường làm việc tốt",
+                "Bảo hiểm đầy đủ"
+            ],
+            "status": "active",
+            "applicants": 8,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_17",
+            "title": "Product Manager",
+            "company": "TekNix Corporation",
+            "companyId": "5",
+            "logo": "/logos/teknix.png",
+            "location": "Quận Bình Thạnh, TP.HCM",
+            "type": "full-time",
+            "field": "it",
+            "salary": "25-40 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-18",
+            "description": "Quản lý sản phẩm từ ý tưởng đến triển khai. Làm việc với team dev và stakeholders.",
+            "skills": [
+                "Product Management",
+                "Agile",
+                "Data Analysis",
+                "Communication"
+            ],
+            "requirements": [
+                "Có 3+ năm kinh nghiệm PM",
+                "Hiểu biết về tech products",
+                "Kỹ năng phân tích tốt"
+            ],
+            "benefits": [
+                "Lương cao, thưởng hấp dẫn",
+                "Được làm việc với sản phẩm mới",
+                "Môi trường startup"
+            ],
+            "status": "active",
+            "applicants": 11,
+            "education": "bachelor",
+            "experience": "2-5"
+        },
+        {
+            "_id": "job_18",
+            "title": "Kế toán viên",
+            "company": "IPS Independent",
+            "companyId": "4",
+            "logo": "/logos/ips.png",
+            "location": "Bình Chánh, TP.HCM",
+            "type": "full-time",
+            "field": "finance",
+            "salary": "12-18 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-14",
+            "description": "Xử lý các nghiệp vụ kế toán, lập báo cáo tài chính, thuế.",
+            "skills": [
+                "Kế toán",
+                "Excel",
+                "MISA",
+                "Thuế"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH ngành Kế toán",
+                "Có 1+ năm kinh nghiệm",
+                "Thành thạo phần mềm kế toán"
+            ],
+            "benefits": [
+                "Lương thưởng hấp dẫn",
+                "Môi trường làm việc ổn định",
+                "Bảo hiểm đầy đủ"
+            ],
+            "status": "active",
+            "applicants": 25,
+            "education": "bachelor",
+            "experience": "1-2"
+        },
+        {
+            "_id": "job_19",
+            "title": "QA/QC Engineer",
+            "company": "FPT Software",
+            "companyId": "2",
+            "logo": "/logos/fpt.png",
+            "location": "Quận 7, TP.HCM",
+            "type": "full-time",
+            "field": "it",
+            "salary": "15-25 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-17",
+            "description": "Kiểm thử phần mềm, viết test cases, đảm bảo chất lượng sản phẩm.",
+            "skills": [
+                "Manual Testing",
+                "Automation Testing",
+                "Selenium",
+                "Jira"
+            ],
+            "requirements": [
+                "Có 1+ năm kinh nghiệm QA/QC",
+                "Biết automation testing là lợi thế"
+            ],
+            "benefits": [
+                "Lương cạnh tranh",
+                "Được đào tạo ISTQB",
+                "Môi trường quốc tế"
+            ],
+            "status": "active",
+            "applicants": 30,
+            "education": "bachelor",
+            "experience": "1-2"
+        },
+        {
+            "_id": "job_20",
+            "title": "Social Media Specialist",
+            "company": "ITP - ĐHQG-HCM",
+            "companyId": "3",
+            "logo": "/logos/itp.png",
+            "location": "TP. Thủ Đức, TP.HCM",
+            "type": "part-time",
+            "field": "marketing",
+            "salary": "6-10 triệu",
+            "deadline": "2025-12-30",
+            "postedAt": "2025-12-16",
+            "description": "Quản lý và phát triển các kênh social media của ITP.",
+            "skills": [
+                "Social Media",
+                "Content Creation",
+                "Canva",
+                "Analytics"
+            ],
+            "requirements": [
+                "Sinh viên hoặc mới tốt nghiệp ngành Truyền thông",
+                "Đam mê social media"
+            ],
+            "benefits": [
+                "Lịch làm việc linh hoạt",
+                "Được networking với startup",
+                "Phát triển kỹ năng"
+            ],
+            "status": "active",
+            "applicants": 18,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_21",
+            "title": "Relationship Manager",
+            "company": "Techcombank",
+            "companyId": "1",
+            "logo": "/logos/techcombank.png",
+            "location": "TP.HCM",
+            "type": "full-time",
+            "field": "finance",
+            "salary": "18-30 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-15",
+            "description": "Quản lý quan hệ khách hàng doanh nghiệp, tư vấn sản phẩm tài chính.",
+            "skills": [
+                "Relationship Management",
+                "Sales",
+                "Financial Products",
+                "Communication"
+            ],
+            "requirements": [
+                "Có 2+ năm kinh nghiệm trong ngân hàng",
+                "Kỹ năng giao tiếp xuất sắc"
+            ],
+            "benefits": [
+                "Lương thưởng cao",
+                "KPI hấp dẫn",
+                "Thăng tiến nhanh trong ngành"
+            ],
+            "status": "active",
+            "applicants": 22,
+            "education": "bachelor",
+            "experience": "2-5"
+        },
+        {
+            "_id": "job_22",
+            "title": "Fullstack Developer Intern",
+            "company": "TekNix Corporation",
+            "companyId": "5",
+            "logo": "/logos/teknix.png",
+            "location": "Quận Bình Thạnh, TP.HCM",
+            "type": "internship",
+            "field": "it",
+            "salary": "6-10 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-18",
+            "description": "Thực tập phát triển web fullstack với React và Node.js.",
+            "skills": [
+                "React",
+                "Node.js",
+                "JavaScript",
+                "Git"
+            ],
+            "requirements": [
+                "Sinh viên năm cuối CNTT",
+                "Có kiến thức về web development",
+                "Ham học hỏi"
+            ],
+            "benefits": [
+                "Trợ cấp thực tập",
+                "Được mentor bởi senior dev",
+                "Cơ hội làm chính thức"
+            ],
+            "status": "active",
+            "applicants": 38,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_23",
+            "title": "Graphic Designer",
+            "company": "Cohota",
+            "companyId": "6",
+            "logo": "/logos/cohota.png",
+            "location": "TP. Thủ Đức, TP.HCM",
+            "type": "full-time",
+            "field": "design",
+            "salary": "12-18 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-15",
+            "description": "Thiết kế đồ họa cho các khóa học, marketing materials.",
+            "skills": [
+                "Photoshop",
+                "Illustrator",
+                "Figma",
+                "Motion Graphics"
+            ],
+            "requirements": [
+                "Có portfolio ấn tượng",
+                "Thành thạo Adobe Creative Suite",
+                "Sáng tạo, chi tiết"
+            ],
+            "benefits": [
+                "Môi trường sáng tạo",
+                "Làm việc với sản phẩm giáo dục",
+                "Flexible hours"
+            ],
+            "status": "active",
+            "applicants": 16,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_24",
+            "title": "Security Engineer",
+            "company": "FPT Software",
+            "companyId": "2",
+            "logo": "/logos/fpt.png",
+            "location": "Hà Nội",
+            "type": "full-time",
+            "field": "it",
+            "salary": "25-40 triệu",
+            "deadline": "2025-12-31",
+            "postedAt": "2025-12-17",
+            "description": "Đảm bảo an toàn thông tin cho các hệ thống và dự án của công ty.",
+            "skills": [
+                "Cybersecurity",
+                "Penetration Testing",
+                "SIEM",
+                "Network Security"
+            ],
+            "requirements": [
+                "Có 2+ năm kinh nghiệm security",
+                "Có chứng chỉ CEH, CISSP là lợi thế"
+            ],
+            "benefits": [
+                "Lương cao",
+                "Được đào tạo chứng chỉ quốc tế",
+                "Làm việc với dự án lớn"
+            ],
+            "status": "active",
+            "applicants": 9,
+            "education": "bachelor",
+            "experience": "2-5"
+        },
+        {
+            "_id": "job_25",
+            "title": "Trợ lý Giám đốc",
+            "company": "ITP - ĐHQG-HCM",
+            "companyId": "3",
+            "logo": "/logos/itp.png",
+            "location": "TP. Thủ Đức, TP.HCM",
+            "type": "full-time",
+            "field": "hr",
+            "salary": "15-22 triệu",
+            "deadline": "2025-12-28",
+            "postedAt": "2025-12-14",
+            "description": "Hỗ trợ Giám đốc trong các công việc hành chính, sắp xếp lịch họp, chuẩn bị tài liệu.",
+            "skills": [
+                "MS Office",
+                "Communication",
+                "Organization",
+                "English"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH ngành Quản trị, Kinh tế",
+                "Tiếng Anh giao tiếp tốt",
+                "Cẩn thận, chu đáo"
+            ],
+            "benefits": [
+                "Lương ổn định",
+                "Môi trường học thuật",
+                "Phát triển kỹ năng quản lý"
+            ],
+            "status": "active",
+            "applicants": 14,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_26",
+            "title": "Event Manager",
+            "company": "TV MEDIA",
+            "companyId": "7",
+            "logo": "/logos/tvmedia.png",
+            "location": "Hà Đông, Hà Nội",
+            "type": "full-time",
+            "field": "marketing",
+            "salary": "15-25 triệu",
+            "deadline": "2026-01-30",
+            "postedAt": "2025-12-28",
+            "description": "Lập kế hoạch và quản lý vận hành các sự kiện lớn. Điều phối nhân sự, làm việc với đối tác cung ứng.",
+            "skills": [
+                "Event Planning",
+                "Team Management",
+                "Budgeting",
+                "Communication"
+            ],
+            "requirements": [
+                "Có 2+ năm kinh nghiệm tổ chức sự kiện",
+                "Chịu được áp lực cao"
+            ],
+            "benefits": [
+                "Thưởng theo dự án",
+                "Môi trường năng động",
+                "Du lịch"
+            ],
+            "status": "active",
+            "applicants": 12,
+            "education": "bachelor",
+            "experience": "2-5"
+        },
+        {
+            "_id": "job_27",
+            "title": "Marketing Intern",
+            "company": "KÊNH TÀI TRỢ",
+            "companyId": "8",
+            "logo": "/logos/kenhtaitro.png",
+            "location": "TP.HCM",
+            "type": "internship",
+            "field": "marketing",
+            "salary": "3-5 triệu",
+            "deadline": "2026-01-15",
+            "postedAt": "2025-12-28",
+            "description": "Hỗ trợ triển khai các chiến dịch Campus Marketing, làm việc với các CLB sinh viên.",
+            "skills": [
+                "Social Media",
+                "Communication",
+                "Canva",
+                "Teamwork"
+            ],
+            "requirements": [
+                "Sinh viên năm 3, 4 yêu thích Marketing",
+                "Năng động, sáng tạo"
+            ],
+            "benefits": [
+                "Dấu mộc thực tập",
+                "Học hỏi từ thực tế",
+                "Cơ hội lên chính thức"
+            ],
+            "status": "active",
+            "applicants": 5,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_28",
+            "title": "Chuyên viên Tuyển dụng",
+            "company": "NHÂN KIỆT",
+            "companyId": "10",
+            "logo": "/logos/nhankiet.png",
+            "location": "TP.HCM",
+            "type": "full-time",
+            "field": "hr",
+            "salary": "10-15 triệu",
+            "deadline": "2026-01-20",
+            "postedAt": "2025-12-28",
+            "description": "Tuyển dụng lao động phổ thông số lượng lớn cho các nhà máy, kho vận.",
+            "skills": [
+                "Recruitment",
+                "Mass Recruitment",
+                "Interviewing",
+                "Sourcing"
+            ],
+            "requirements": [
+                "Tốt nghiệp CĐ/ĐH",
+                "Có kinh nghiệm tuyển dụng mass là lợi thế"
+            ],
+            "benefits": [
+                "Thưởng doanh số",
+                "Bảo hiểm đầy đủ",
+                "Môi trường ổn định"
+            ],
+            "status": "active",
+            "applicants": 20,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_29",
+            "title": "Facebook Ads Optimizer",
+            "company": "GIA NGUYỄN ADS",
+            "companyId": "11",
+            "logo": "/logos/gianguyen.png",
+            "location": "TP.HCM",
+            "type": "full-time",
+            "field": "marketing",
+            "salary": "12-20 triệu",
+            "deadline": "2026-01-31",
+            "postedAt": "2025-12-28",
+            "description": "Lên kế hoạch và tối ưu hóa các chiến dịch quảng cáo Facebook cho khách hàng.",
+            "skills": [
+                "Facebook Ads",
+                "Digital Marketing",
+                "Content",
+                "Data Analysis"
+            ],
+            "requirements": [
+                "Có kinh nghiệm chạy ads 1 năm trở lên",
+                "Có tư duy marketing tốt"
+            ],
+            "benefits": [
+                "Thưởng hiệu quả",
+                "Đào tạo chuyên sâu",
+                "Team building"
+            ],
+            "status": "active",
+            "applicants": 8,
+            "education": "bachelor",
+            "experience": "1-2"
+        },
+        {
+            "_id": "job_30",
+            "title": "Software Engineer (Java)",
+            "company": "ALTA GROUP",
+            "companyId": "13",
+            "logo": "/logos/alta.png",
+            "location": "TP.HCM",
+            "type": "full-time",
+            "field": "it",
+            "salary": "15-25 triệu",
+            "deadline": "2026-02-15",
+            "postedAt": "2025-12-28",
+            "description": "Phát triển các phần mềm quản lý doanh nghiệp, tích hợp hệ thống.",
+            "skills": [
+                "Java",
+                "Spring Boot",
+                "SQL",
+                "Microservices"
+            ],
+            "requirements": [
+                "Tốt nghiệp ĐH chuyên ngành CNTT",
+                "Có kiến thức nền tảng tốt"
+            ],
+            "benefits": [
+                "Môi trường chuyên nghiệp",
+                "Cơ hội thăng tiến",
+                "Đãi ngộ tốt"
+            ],
+            "status": "active",
+            "applicants": 15,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_31",
+            "title": ".NET Developer",
+            "company": "MIA SOLUTION",
+            "companyId": "14",
+            "logo": "/logos/miasolution.png",
+            "location": "TP.HCM",
+            "type": "full-time",
+            "field": "it",
+            "salary": "18-30 triệu",
+            "deadline": "2026-01-30",
+            "postedAt": "2025-12-28",
+            "description": "Tham gia phát triển các dự án outsource cho khách hàng nước ngoài sử dụng .NET Core.",
+            "skills": [
+                ".NET Core",
+                "C#",
+                "SQL Server",
+                "Entity Framework"
+            ],
+            "requirements": [
+                "Có 2+ năm kinh nghiệm .NET",
+                "Tiếng Anh đọc hiểu tốt"
+            ],
+            "benefits": [
+                "Lương tháng 13",
+                "Review lương 2 lần/năm",
+                "Du lịch công ty"
+            ],
+            "status": "active",
+            "applicants": 10,
+            "education": "bachelor",
+            "experience": "2-5"
+        },
+        {
+            "_id": "job_33",
+            "title": "Trợ lý Luật sư",
+            "company": "QUỐC & CỘNG SỰ",
+            "companyId": "9",
+            "logo": "/logos/quoclaw.png",
+            "location": "TP.HCM",
+            "type": "full-time",
+            "field": "law",
+            "salary": "8-12 triệu",
+            "deadline": "2026-01-20",
+            "postedAt": "2025-12-28",
+            "description": "Hỗ trợ luật sư soạn thảo văn bản, nghiên cứu hồ sơ vụ việc, liên hệ khách hàng.",
+            "skills": [
+                "Legal Research",
+                "Drafting",
+                "Communication",
+                "Office"
+            ],
+            "requirements": [
+                "Cử nhân Luật",
+                "Chăm chỉ, cẩn thận"
+            ],
+            "benefits": [
+                "Được hướng dẫn bởi LS giỏi",
+                "Cơ hội học việc",
+                "Môi trường chuyên nghiệp"
+            ],
+            "status": "active",
+            "applicants": 18,
+            "education": "bachelor",
+            "experience": "no-exp"
+        },
+        {
+            "_id": "job_34",
+            "title": "Chuyên viên Tư vấn Luật",
+            "company": "TALENT LAW FIRM",
+            "companyId": "12",
+            "logo": "/logos/talentlaw.png",
+            "location": "TP.HCM",
+            "type": "full-time",
+            "field": "law",
+            "salary": "15-25 triệu",
+            "deadline": "2026-02-10",
+            "postedAt": "2025-12-28",
+            "description": "Tư vấn pháp lý cho doanh nghiệp về đầu tư, lao động, thương mại.",
+            "skills": [
+                "Corporate Law",
+                "Consulting",
+                "English",
+                "Legal Advice"
+            ],
+            "requirements": [
+                "Có thẻ Luật sư hoặc kinh nghiệm tương đương",
+                "Tiếng Anh tốt"
+            ],
+            "benefits": [
+                "Lương thưởng hấp dẫn",
+                "Khách hàng đa quốc gia",
+                "Phát triển sự nghiệp"
+            ],
+            "status": "active",
+            "applicants": 7,
+            "education": "bachelor",
+            "experience": "2-5"
+        }
+    ]
+}
