@@ -24,6 +24,8 @@ interface Application {
   phone: string
   coverLetter: string
   cvOriginalName: string
+  cvUrl?: string
+  cvBase64?: string
   status: string
 
   appliedAt: string
@@ -181,15 +183,19 @@ export default function MyApplicationsPage() {
                     </TableCell>
 
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-blue-600 p-0"
-                        onClick={() => handleViewCV(app)}
-                      >
-                        <FileText className="h-4 w-4 mr-1" />
-                        {app.cvOriginalName || "Xem CV"}
-                      </Button>
+                      {app.cvUrl || app.cvBase64 || app.cvOriginalName ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-blue-600 p-0"
+                          onClick={() => handleViewCV(app)}
+                        >
+                          <FileText className="h-4 w-4 mr-1" />
+                          {app.cvOriginalName || "Xem CV"}
+                        </Button>
+                      ) : (
+                        <span className="text-sm text-gray-500">Không có CV</span>
+                      )}
                     </TableCell>
 
                     <TableCell>

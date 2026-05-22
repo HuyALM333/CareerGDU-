@@ -188,6 +188,15 @@ function ManageApplicationsContent() {
     }
 
     const handleViewCV = async (app: Application) => {
+        if (!app.cvUrl && !app.cvBase64 && !app.cvOriginalName) {
+            toast({
+                title: "Không có CV",
+                description: "Ứng viên chưa nộp CV.",
+                variant: "destructive"
+            })
+            return
+        }
+
         setSelectedApp(app)
         setViewMode("cv")
         setCvLoading(true)
@@ -548,15 +557,19 @@ function ManageApplicationsContent() {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="text-blue-600 hover:text-blue-800 hover:bg-blue-50"
-                                                        onClick={() => handleViewCV(app)}
-                                                    >
-                                                        <FileText className="h-4 w-4 mr-1" />
-                                                        Xem CV
-                                                    </Button>
+                                                    {app.cvUrl || app.cvBase64 || app.cvOriginalName ? (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                                                            onClick={() => handleViewCV(app)}
+                                                        >
+                                                            <FileText className="h-4 w-4 mr-1" />
+                                                            Xem CV
+                                                        </Button>
+                                                    ) : (
+                                                        <span className="text-sm text-gray-500">Không có CV</span>
+                                                    )}
                                                 </TableCell>
                                                 <TableCell>
                                                     <Select
@@ -618,6 +631,9 @@ function ManageApplicationsContent() {
                                 <div className="grid grid-cols-1 gap-4 lg:hidden">
                                     {filteredApplications.map((app) => (
                                         <div key={app.id} className="p-4 rounded-xl border border-gray-100 bg-white shadow-sm space-y-4">
+                                            {(!app.cvUrl && !app.cvBase64 && !app.cvOriginalName) && (
+                                                <div className="text-xs text-gray-500">Không có CV</div>
+                                            )}
                                             <div className="flex justify-between items-start">
                                                 <div className="min-w-0 flex-1">
                                                     <h3 className="font-bold text-blue-900 truncate pr-2">{app.job?.title}</h3>
@@ -715,9 +731,15 @@ function ManageApplicationsContent() {
                                         Tải lại
                                     </Button>
                                 ) : (
-                                    <Button variant="outline" size="sm" onClick={() => selectedApp && handleViewCV(selectedApp)} className="h-8 border-blue-200 text-blue-600 hover:bg-blue-50">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => selectedApp && handleViewCV(selectedApp)}
+                                        className="h-8 border-blue-200 text-blue-600 hover:bg-blue-50"
+                                        disabled={!hasCV}
+                                    >
                                         <FileText className="h-3 w-3 mr-1" />
-                                        Xem CV
+                                        {hasCV ? "Xem CV" : "Không có CV"}
                                     </Button>
                                 )}
                                 <Button

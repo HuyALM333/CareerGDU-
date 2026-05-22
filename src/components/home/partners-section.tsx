@@ -117,6 +117,11 @@ export function PartnersSection() {
                     alt={partner.name}
                     className="h-24 md:h-32 lg:h-36 w-auto object-contain drop-shadow-lg"
                     title={partner.name}
+                    onError={(event) => {
+                      const target = event.currentTarget
+                      if (target.src.endsWith("/placeholder.svg")) return
+                      target.src = "/placeholder.svg"
+                    }}
                   />
                 </div>
               )

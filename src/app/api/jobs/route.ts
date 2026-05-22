@@ -191,7 +191,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Tài khoản không tồn tại hoặc đã bị xóa." }, { status: 401 })
     }
 
-    // 2. Save logo
+    // 2. Employer verification gate
+    if (role === "employer") {
+      const verification = await prisma.companyVerification.findUnique({
+        where: { userId: creatorId },
+        select: { status: true }
+      })
+
+      if (!verification || verification.status !== "VERIFIED") {
+        return NextResponse.json({
+          error: "Hồ sơ doanh nghiệp chưa được xác minh. Vui lòng hoàn thiện và chờ Admin duyệt trước khi đăng tin.",
+          verificationRequired: true
+        }, { status: 403 })
+      }
+    }
+
+    // 3. Save logo
     const logoUrl = await saveBase64Image(body.logo, "logos")
 
     // 🔥 NEW: Save document
@@ -213,7 +228,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Create Job
+    // 4. Create Job
     const parsedPublishAt = postedAt ? new Date(postedAt) : new Date()
     const publishAtValue = !isNaN(parsedPublishAt.getTime()) ? parsedPublishAt : new Date()
 

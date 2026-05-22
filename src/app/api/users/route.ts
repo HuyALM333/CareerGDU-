@@ -51,15 +51,46 @@ export async function GET(request: Request) {
                 description: true,
                 size: true,
                 contactPerson: true,
-                industry: true
+                industry: true,
+                companyVerification: {
+                    select: {
+                        companyName: true,
+                        taxCode: true,
+                        address: true,
+                        representative: true,
+                        phone: true,
+                        websiteOrFacebook: true,
+                        licenseFiles: true,
+                        status: true,
+                        adminNote: true,
+                        submittedAt: true,
+                        reviewedAt: true
+                    }
+                }
             }
         })
+
+        const isVerificationComplete = (verification: any) => {
+            if (!verification) return false
+            const required = [
+                verification.companyName,
+                verification.taxCode,
+                verification.address,
+                verification.representative,
+                verification.phone,
+                verification.websiteOrFacebook
+            ]
+            const hasAllFields = required.every((value) => typeof value === "string" && value.trim().length > 0)
+            const files = Array.isArray(verification.licenseFiles) ? verification.licenseFiles : []
+            return hasAllFields && files.length > 0
+        }
 
         return NextResponse.json({
             success: true,
             users: users.map(user => ({
                 ...user,
-                _id: user.id
+                _id: user.id,
+                companyVerificationComplete: isVerificationComplete(user.companyVerification)
             })),
         })
     } catch (error) {

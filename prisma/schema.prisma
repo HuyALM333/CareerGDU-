@@ -66,6 +66,7 @@ model User {
   reviewsLiked    ReviewLike[]
   reviewComments  ReviewComment[]
   contacts        Contact[]
+  companyVerification CompanyVerification?
 
 
   @@map("users")
@@ -230,6 +231,28 @@ model Company {
 
 
   @@map("companies")
+}
+
+model CompanyVerification {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  companyName       String?
+  taxCode           String?
+  address           String?
+  representative    String?
+  phone             String?
+  websiteOrFacebook String?
+  licenseFiles      Json?
+  status            String   @default("UNVERIFIED")
+  adminNote         String?
+  submittedAt       DateTime?
+  reviewedAt        DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("company_verifications")
 }
 
 model UserReview {

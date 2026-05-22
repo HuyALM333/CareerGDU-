@@ -195,6 +195,11 @@ export default function CompanyDetailPage() {
                                     src={company.logo || "/placeholder.svg"}
                                     alt={company.name}
                                     className="w-full h-full object-contain p-2"
+                                    onError={(event) => {
+                                        const target = event.currentTarget
+                                        if (target.src.endsWith("/placeholder.svg")) return
+                                        target.src = "/placeholder.svg"
+                                    }}
                                 />
                             </div>
                         </div>

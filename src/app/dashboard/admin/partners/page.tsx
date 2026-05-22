@@ -48,10 +48,22 @@ export default function PartnerManagementPage() {
 
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [editingPartner, setEditingPartner] = useState<any>(null)
+    const [benefitsInput, setBenefitsInput] = useState("")
 
     useEffect(() => {
         fetchPartners()
     }, [user])
+
+    useEffect(() => {
+        if (!editDialogOpen) return
+        if (Array.isArray(editingPartner?.benefits)) {
+            setBenefitsInput(editingPartner.benefits.join(", "))
+        } else if (typeof editingPartner?.benefits === "string") {
+            setBenefitsInput(editingPartner.benefits)
+        } else {
+            setBenefitsInput("")
+        }
+    }, [editDialogOpen, editingPartner])
 
     const fetchPartners = async () => {
         try {
@@ -124,10 +136,20 @@ export default function PartnerManagementPage() {
             const url = isNew ? '/api/admin/partners' : `/api/admin/partners/${editingPartner._id}`
             const method = isNew ? 'POST' : 'PATCH'
 
+            const normalizedBenefits = benefitsInput
+                .split(",")
+                .map((item) => item.trim())
+                .filter((item) => item.length > 0)
+
+            const payload = {
+                ...editingPartner,
+                benefits: normalizedBenefits
+            }
+
             const response = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(editingPartner)
+                body: JSON.stringify(payload)
             })
             const data = await response.json()
 
@@ -190,6 +212,7 @@ export default function PartnerManagementPage() {
                             website: "",
                             benefits: []
                         })
+                        setBenefitsInput("")
                         setEditDialogOpen(true)
                     }} className="w-full sm:w-auto text-xs sm:text-sm">
                         <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -445,11 +468,8 @@ export default function PartnerManagementPage() {
                         <div className="space-y-2">
                             <Label>Phúc lợi (ngăn cách bằng dấu phẩy)</Label>
                             <Input
-                                value={Array.isArray(editingPartner?.benefits) ? editingPartner.benefits.join(", ") : ""}
-                                onChange={(e) => setEditingPartner({
-                                    ...editingPartner,
-                                    benefits: e.target.value.split(",").map(b => b.trim()).filter(b => b !== "")
-                                })}
+                                value={benefitsInput}
+                                onChange={(e) => setBenefitsInput(e.target.value)}
                                 placeholder="VD: Lương thưởng, Bảo hiểm, Đào tạo"
                             />
                         </div>

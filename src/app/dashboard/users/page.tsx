@@ -23,6 +23,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 // Mock users removed
@@ -76,6 +77,12 @@ export default function UsersManagementPage() {
     password: "",
     role: "student"
   })
+
+  const [verificationDialogOpen, setVerificationDialogOpen] = useState(false)
+  const [verificationLoading, setVerificationLoading] = useState(false)
+  const [verificationTarget, setVerificationTarget] = useState<any>(null)
+  const [verificationData, setVerificationData] = useState<any>(null)
+  const [verificationNote, setVerificationNote] = useState("")
 
   useEffect(() => {
     fetchUsers()
@@ -199,6 +206,83 @@ export default function UsersManagementPage() {
     } finally {
       setRoleDialogOpen(false)
       setEditingUser(null)
+    }
+  }
+
+  const handleOpenVerification = async (targetUser: any) => {
+    setVerificationTarget(targetUser)
+    setVerificationDialogOpen(true)
+    setVerificationLoading(true)
+
+    try {
+      const response = await fetch(`/api/company-verification?userId=${targetUser._id}`)
+      const data = await response.json()
+      if (data.success) {
+        setVerificationData({
+          ...(data.data || null),
+          isComplete: data.isComplete || false
+        })
+        setVerificationNote(data.data?.adminNote || "")
+      } else {
+        setVerificationData(null)
+        setVerificationNote("")
+      }
+    } catch (error) {
+      console.error("Failed to fetch verification", error)
+      setVerificationData(null)
+    } finally {
+      setVerificationLoading(false)
+    }
+  }
+
+  const handleVerifyCompany = async (targetUserId: string) => {
+    try {
+      const response = await fetch(`/api/company-verification/${targetUserId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "VERIFIED" })
+      })
+      const data = await response.json()
+      if (data.success) {
+        toast({ title: "Đã xác thực", description: "Hồ sơ doanh nghiệp đã được xác minh." })
+        setUsers(prev => prev.map(u => u._id === targetUserId
+          ? { ...u, companyVerification: data.data, companyVerificationComplete: true }
+          : u
+        ))
+        setVerificationData((prev: any) => prev ? { ...prev, status: "VERIFIED" } : prev)
+      } else {
+        throw new Error(data.error || "Không thể xác thực")
+      }
+    } catch (error) {
+      toast({ title: "Lỗi", description: "Không thể xác thực hồ sơ doanh nghiệp.", variant: "destructive" })
+    }
+  }
+
+  const handleRejectCompany = async (targetUserId: string) => {
+    if (!verificationNote.trim()) {
+      toast({ title: "Thiếu lý do", description: "Vui lòng nhập lý do từ chối.", variant: "destructive" })
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/company-verification/${targetUserId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "REJECTED", adminNote: verificationNote.trim() })
+      })
+      const data = await response.json()
+      if (data.success) {
+        toast({ title: "Đã từ chối", description: "Hồ sơ doanh nghiệp đã bị từ chối." })
+        setUsers(prev => prev.map(u => u._id === targetUserId
+          ? { ...u, companyVerification: data.data, companyVerificationComplete: false }
+          : u
+        ))
+        setVerificationData((prev: any) => prev ? { ...prev, status: "REJECTED", adminNote: verificationNote.trim() } : prev)
+      } else {
+        throw new Error(data.error || "Không thể từ chối")
+      }
+    } catch (error) {
+      toast({ title: "Lỗi", description: "Không thể từ chối hồ sơ doanh nghiệp.", variant: "destructive" })
     }
   }
 
@@ -442,6 +526,17 @@ export default function UsersManagementPage() {
                               {statusLabels[u.status as keyof typeof statusLabels] || u.status}
                             </Badge>
                           )}
+                          {u.role === "employer" && u.companyVerification?.status && (
+                            <Badge variant="outline" className="text-[10px]">
+                              {u.companyVerification.status === "VERIFIED"
+                                ? "Xác minh: Đã duyệt"
+                                : u.companyVerification.status === "UNDER_REVIEW"
+                                  ? "Xác minh: Chờ duyệt"
+                                  : u.companyVerification.status === "REJECTED"
+                                    ? "Xác minh: Từ chối"
+                                    : "Xác minh: Chưa gửi"}
+                            </Badge>
+                          )}
                         </div>
                       </td>
                       <td className="py-3 px-4 text-muted-foreground">
@@ -457,6 +552,12 @@ export default function UsersManagementPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
 
+                              {u.role === "employer" && (
+                                <DropdownMenuItem onClick={() => handleOpenVerification(u)}>
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  Xem hồ sơ xác minh
+                                </DropdownMenuItem>
+                              )}
                               <DropdownMenuItem onClick={() => {
                                 setEditingUser(u)
                                 setSelectedRole(u.role)
@@ -528,7 +629,12 @@ export default function UsersManagementPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-
+                            {u.role === "employer" && (
+                              <DropdownMenuItem onClick={() => handleOpenVerification(u)}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                Xem hồ sơ xác minh
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem onClick={() => {
                               setEditingUser(u)
                               setSelectedRole(u.role)
@@ -569,6 +675,18 @@ export default function UsersManagementPage() {
                         </Badge>
                       )}
 
+                      {u.role === "employer" && u.companyVerification?.status && (
+                        <Badge variant="outline" className="text-[10px] px-2.5">
+                          {u.companyVerification.status === "VERIFIED"
+                            ? "Xác minh: Đã duyệt"
+                            : u.companyVerification.status === "UNDER_REVIEW"
+                              ? "Xác minh: Chờ duyệt"
+                              : u.companyVerification.status === "REJECTED"
+                                ? "Xác minh: Từ chối"
+                                : "Xác minh: Chưa gửi"}
+                        </Badge>
+                      )}
+
                       {u.role === 'employer' && u.status === 'pending' && (
                         <Button
                           size="sm"
@@ -602,6 +720,121 @@ export default function UsersManagementPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>Hủy</Button>
             <Button variant="destructive" onClick={handleDeleteUser}>Xóa và dọn dẹp dữ liệu</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Company Verification Dialog */}
+      <Dialog open={verificationDialogOpen} onOpenChange={setVerificationDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Hồ sơ xác minh doanh nghiệp</DialogTitle>
+            <DialogDescription>
+              {verificationTarget?.name || "Nhà tuyển dụng"}
+            </DialogDescription>
+          </DialogHeader>
+
+          {verificationLoading ? (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Shield className="h-4 w-4" />
+              Đang tải dữ liệu xác minh...
+            </div>
+          ) : verificationData ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline">
+                  {verificationData.status === "VERIFIED"
+                    ? "Đã xác minh"
+                    : verificationData.status === "UNDER_REVIEW"
+                      ? "Đang chờ duyệt"
+                      : verificationData.status === "REJECTED"
+                        ? "Từ chối"
+                        : "Chưa xác minh"}
+                </Badge>
+                {verificationData.isComplete && (
+                  <Badge className="bg-green-100 text-green-700">Đủ điều kiện duyệt</Badge>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-muted-foreground">Tên doanh nghiệp</p>
+                  <p className="font-medium">{verificationData.companyName || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Mã số thuế</p>
+                  <p className="font-medium">{verificationData.taxCode || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Người đại diện</p>
+                  <p className="font-medium">{verificationData.representative || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Số điện thoại</p>
+                  <p className="font-medium">{verificationData.phone || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Website/Facebook</p>
+                  <p className="font-medium">{verificationData.websiteOrFacebook || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Địa chỉ</p>
+                  <p className="font-medium">{verificationData.address || "—"}</p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Giấy tờ đính kèm</p>
+                {Array.isArray(verificationData.licenseFiles) && verificationData.licenseFiles.length > 0 ? (
+                  <div className="space-y-2">
+                    {verificationData.licenseFiles.map((file: any, index: number) => (
+                      <div key={`${file?.url}-${index}`} className="flex items-center justify-between rounded-md border px-3 py-2">
+                        <span className="text-sm truncate max-w-[70%]">{file?.name || file?.url || "Tệp đính kèm"}</span>
+                        {file?.url && (
+                          <a
+                            href={file.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-xs text-primary hover:underline"
+                          >
+                            Xem
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">Chưa có giấy tờ.</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Lý do/Phản hồi</p>
+                <Textarea
+                  value={verificationNote}
+                  onChange={(e) => setVerificationNote(e.target.value)}
+                  placeholder="Nhập lý do từ chối (bắt buộc khi từ chối)"
+                  rows={3}
+                />
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">Chưa có hồ sơ xác minh.</p>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setVerificationDialogOpen(false)}>Đóng</Button>
+            {verificationTarget && verificationData?.status !== "VERIFIED" && (
+              <Button
+                variant="outline"
+                onClick={() => handleRejectCompany(verificationTarget._id)}
+              >
+                Từ chối
+              </Button>
+            )}
+            {verificationTarget && verificationData?.isComplete && verificationData?.status !== "VERIFIED" && (
+              <Button onClick={() => handleVerifyCompany(verificationTarget._id)}>Xác thực</Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

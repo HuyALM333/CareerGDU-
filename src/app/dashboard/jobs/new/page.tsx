@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -153,6 +153,9 @@ export default function PostJobPage() {
     const [previewData, setPreviewData] = useState<any>(null)
     const [customField, setCustomField] = useState<string>("")
     const [logoError, setLogoError] = useState<string | null>(null)
+    const [verificationBlocked, setVerificationBlocked] = useState(false)
+    const [verificationChecked, setVerificationChecked] = useState(false)
+    const [verificationNote, setVerificationNote] = useState("")
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -190,6 +193,35 @@ export default function PostJobPage() {
     const unlimitedQuantity = form.watch("unlimitedQuantity")
     const unlimitedDeadline = form.watch("unlimitedDeadline")
     const jobType = form.watch("type")
+
+    useEffect(() => {
+        const checkVerification = async () => {
+            if (user?.role !== "employer") {
+                setVerificationBlocked(false)
+                setVerificationChecked(true)
+                return
+            }
+
+            const userId = user?.id || user?._id
+            if (!userId) return
+
+            try {
+                const res = await fetch(`/api/company-verification?userId=${userId}`)
+                const data = await res.json()
+                const status = data?.data?.status
+                const isComplete = Boolean(data?.isComplete)
+                setVerificationBlocked(status !== "VERIFIED" || !isComplete)
+                setVerificationNote(status === "REJECTED" ? (data?.data?.adminNote || "") : "")
+            } catch (error) {
+                setVerificationBlocked(true)
+                setVerificationNote("")
+            } finally {
+                setVerificationChecked(true)
+            }
+        }
+
+        checkVerification()
+    }, [user?.id, user?._id, user?.role])
 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -232,6 +264,36 @@ export default function PostJobPage() {
     }
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        if (user?.role === "employer") {
+            const userId = user?.id || user?._id
+            if (userId) {
+                try {
+                    const res = await fetch(`/api/company-verification?userId=${userId}`)
+                    const data = await res.json()
+
+                    const status = data?.data?.status
+                    const isComplete = Boolean(data?.isComplete)
+
+                    if (status !== "VERIFIED" || !isComplete) {
+                        toast({
+                            title: "Chưa đủ điều kiện đăng tin",
+                            description: "Vui lòng bổ sung hồ sơ và chờ Admin xác minh doanh nghiệp.",
+                            variant: "destructive",
+                        })
+                        router.push("/dashboard/company")
+                        return
+                    }
+                } catch (error) {
+                    toast({
+                        title: "Không thể kiểm tra hồ sơ",
+                        description: "Vui lòng thử lại sau.",
+                        variant: "destructive",
+                    })
+                    return
+                }
+            }
+        }
+
         // Validate logo is required
         if (!logoBase64) {
             setLogoError("Vui lòng tải logo doanh nghiệp")
@@ -430,6 +492,11 @@ export default function PostJobPage() {
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
+                    {verificationNote && (
+                        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                            <strong>Hồ sơ bị từ chối:</strong> {verificationNote}
+                        </div>
+                    )}
                     {/* General Info */}
                     <Card>
                         <CardHeader>
@@ -1100,10 +1167,32 @@ export default function PostJobPage() {
                         <Button type="button" variant="secondary" onClick={handlePreview} className="gap-2">
                             <Eye className="w-4 h-4" /> Xem trước
                         </Button>
-                        <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
-                            {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang xử lý...</> : "Đăng tin tuyển dụng"}
-                        </Button>
+                        {verificationBlocked ? (
+                            <Button
+                                type="button"
+                                disabled
+                                className="bg-gray-300 text-gray-600 cursor-not-allowed"
+                            >
+                                Hoàn thiện hồ sơ doanh nghiệp
+                            </Button>
+                        ) : (
+                            <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
+                                {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang xử lý...</> : "Đăng tin tuyển dụng"}
+                            </Button>
+                        )}
                     </div>
+                    {verificationBlocked && verificationChecked && (
+                        <p className="text-sm text-amber-600 text-right">
+                            Vui lòng bổ sung hồ sơ và chờ Admin xác minh trước khi đăng tin.
+                            <button
+                                type="button"
+                                className="ml-2 underline"
+                                onClick={() => router.push("/dashboard/company")}
+                            >
+                                Cập nhật hồ sơ
+                            </button>
+                        </p>
+                    )}
                 </form>
             </Form>
         </div >

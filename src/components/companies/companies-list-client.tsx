@@ -137,6 +137,11 @@ export function CompaniesListClient() {
                   src={company.logo || "/placeholder.svg?height=56&width=56"}
                   alt={company.name}
                   className="w-14 h-14 rounded-lg object-contain bg-gray-50 p-1"
+                  onError={(event) => {
+                    const target = event.currentTarget
+                    if (target.src.includes("/placeholder.svg")) return
+                    target.src = "/placeholder.svg?height=56&width=56"
+                  }}
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-2">
