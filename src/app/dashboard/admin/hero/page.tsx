@@ -14,6 +14,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface HeroSlide {
     _id?: string
@@ -40,6 +50,9 @@ export default function AdminHeroPage() {
     const [loading, setLoading] = useState(true)
     const [activeTab, setActiveTab] = useState("home")
     const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null)
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [slideToDelete, setSlideToDelete] = useState<string | null>(null)
+    const [importDialogOpen, setImportDialogOpen] = useState(false)
 
     useEffect(() => {
         fetchSlides()
@@ -116,8 +129,6 @@ export default function AdminHeroPage() {
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Bạn có chắc chắn muốn xóa slide này?")) return
-
         try {
             const res = await fetch(`/api/admin/hero-slides?id=${id}`, { method: "DELETE" })
             const data = await res.json()
@@ -150,7 +161,6 @@ export default function AdminHeroPage() {
     }
 
     const handleImportDefaults = async () => {
-        if (!confirm("Bạn có muốn nhập dữ liệu mặc định (3 ảnh gốc của trang chủ) không?")) return
         setLoading(true)
         try {
             const res = await fetch("/api/admin/hero-slides/import", { method: "POST" })
@@ -266,7 +276,11 @@ export default function AdminHeroPage() {
                                                 <Settings2 className="w-4 h-4" />
                                             </button>
                                             <button
-                                                onClick={() => slide._id && handleDelete(slide._id)}
+                                                onClick={() => {
+                                                    if (!slide._id) return
+                                                    setSlideToDelete(slide._id)
+                                                    setDeleteDialogOpen(true)
+                                                }}
                                                 className="bg-red-500/80 hover:bg-red-500 backdrop-blur-md p-2 rounded-lg text-white transition-colors"
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -344,7 +358,7 @@ export default function AdminHeroPage() {
                         {activeTab === "home" && (
                             <Button
                                 variant="outline"
-                                onClick={handleImportDefaults}
+                                onClick={() => setImportDialogOpen(true)}
                                 className="border-2 border-[#1e293b] text-[#1e293b] hover:bg-slate-50 px-8 py-6 rounded-xl h-auto font-bold text-lg"
                             >
                                 <ImageIcon className="w-5 h-5 mr-1.5" /> Nhập dữ liệu mặc định
@@ -353,6 +367,55 @@ export default function AdminHeroPage() {
                     </div>
                 </div>
             )}
+
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Xác nhận xóa slide</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Slide này sẽ bị xóa khỏi cấu hình banner và không thể khôi phục.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Hủy</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={(event) => {
+                                event.preventDefault()
+                                if (slideToDelete) handleDelete(slideToDelete)
+                                setDeleteDialogOpen(false)
+                                setSlideToDelete(null)
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Xóa
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Nhập dữ liệu mặc định?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Hệ thống sẽ nạp lại 3 ảnh gốc của trang chủ. Nếu đang có dữ liệu tùy chỉnh, bạn nên kiểm tra trước khi tiếp tục.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Hủy</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={(event) => {
+                                event.preventDefault()
+                                setImportDialogOpen(false)
+                                handleImportDefaults()
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Nhập dữ liệu
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {/* Editor Modal */}
             {editingSlide && (

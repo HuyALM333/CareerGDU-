@@ -8,6 +8,16 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast"
 import { ReviewsDataManager } from "./reviews-data-manager"
 import { useAuth } from "@/lib/auth-context"
@@ -60,6 +70,13 @@ export function ReviewsClient() {
   const [expandedComments, setExpandedComments] = useState<string | null>(null)
   const [comments, setComments] = useState<Record<string, Array<{ id: string, text: string, date: string, author: string, userId?: string, email?: string, avatarUrl?: string }>>>({})
   const [newCommentText, setNewCommentText] = useState("")
+  const [deleteConfirm, setDeleteConfirm] = useState<null | {
+    kind: "comment" | "review"
+    reviewId: string
+    commentId?: string
+    title: string
+    description: string
+  }>(null)
 
   const { user } = useAuth()
 
@@ -327,56 +344,58 @@ export function ReviewsClient() {
   }
 
   const handleDeleteComment = async (reviewId: string, commentId: string) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa bình luận này?")) return
-
-    try {
-      const response = await fetch(`/api/reviews/comments?id=${commentId}`, {
-        method: "DELETE",
-      })
-      const data = await response.json()
-
-      if (data.success) {
-        // Remove comment from state
-        setComments((prev) => ({
-          ...prev,
-          [reviewId]: prev[reviewId]?.filter((c) => c.id !== commentId) || []
-        }))
-
-        toast({
-          title: "Đã xóa",
-          description: "Bình luận đã được xóa.",
-        })
-      }
-    } catch (error) {
-      console.error("[v0] Error deleting comment:", error)
-      toast({
-        title: "Lỗi",
-        description: "Không thể xóa bình luận. Vui lòng thử lại.",
-        variant: "destructive",
-      })
-    }
+    setDeleteConfirm({
+      kind: "comment",
+      reviewId,
+      commentId,
+      title: "Xác nhận xóa bình luận",
+      description: "Bình luận này sẽ bị xóa khỏi đánh giá và không thể hoàn tác."
+    })
   }
 
   const handleDeleteReview = async (reviewId: string) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa đánh giá này? Hành động này không thể hoàn tác.")) return
-
     if (!user) return
 
+    setDeleteConfirm({
+      kind: "review",
+      reviewId,
+      title: "Xác nhận xóa đánh giá",
+      description: "Đánh giá này sẽ bị xóa vĩnh viễn khỏi hệ thống. Hành động này không thể hoàn tác."
+    })
+  }
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm) return
+
     try {
-      const response = await fetch(`/api/reviews?id=${reviewId}&userId=${user.id}`, {
-        method: "DELETE",
-      })
+      const response = deleteConfirm.kind === "comment"
+        ? await fetch(`/api/reviews/comments?id=${deleteConfirm.commentId}`, { method: "DELETE" })
+        : await fetch(`/api/reviews?id=${deleteConfirm.reviewId}&userId=${user.id}`, { method: "DELETE" })
       const data = await response.json()
 
       if (data.success) {
-        setReviews((prev) => prev.filter((r) => r.id !== reviewId))
-        toast({ title: "Đã xóa", description: "Đánh giá của bạn đã được xóa." })
-      } else {
-        toast({ title: "Lỗi", description: data.error, variant: "destructive" })
+        if (deleteConfirm.kind === "comment") {
+          setComments((prev) => ({
+            ...prev,
+            [deleteConfirm.reviewId]: prev[deleteConfirm.reviewId]?.filter((c) => c.id !== deleteConfirm.commentId) || []
+          }))
+          toast({ title: "Đã xóa", description: "Bình luận đã được xóa." })
+        } else {
+          setReviews((prev) => prev.filter((r) => r.id !== deleteConfirm.reviewId))
+          toast({ title: "Đã xóa", description: "Đánh giá của bạn đã được xóa." })
+        }
       }
     } catch (error) {
-      console.error("Delete review error:", error)
-      toast({ title: "Lỗi", description: "Không thể xóa đánh giá.", variant: "destructive" })
+      console.error("[v0] Error deleting item:", error)
+      toast({
+        title: "Lỗi",
+        description: deleteConfirm.kind === "comment"
+          ? "Không thể xóa bình luận. Vui lòng thử lại."
+          : "Không thể xóa đánh giá.",
+        variant: "destructive",
+      })
+    } finally {
+      setDeleteConfirm(null)
     }
   }
 
@@ -748,6 +767,27 @@ export function ReviewsClient() {
                           </div>
                         )}
                       </div>
+
+                      <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{deleteConfirm?.title}</AlertDialogTitle>
+                            <AlertDialogDescription>{deleteConfirm?.description}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Hủy</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={(event) => {
+                                event.preventDefault()
+                                confirmDelete()
+                              }}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Xóa
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   )}
                 </div>

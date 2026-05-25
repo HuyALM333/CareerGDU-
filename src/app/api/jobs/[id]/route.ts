@@ -10,19 +10,26 @@ export async function DELETE(
     try {
         const { id } = params
 
-        // In real app: Check if user owns this job before deleting!
-        const result = await prisma.job.delete({
+        const currentJob = await prisma.job.findUnique({
             where: { id }
         })
 
-        return NextResponse.json({ success: true, message: "Job deleted successfully" })
-    } catch (error: any) {
-        console.error("Delete job error:", error)
-        if (error.code === 'P2025') {
+        if (!currentJob) {
             return NextResponse.json({ error: "Job not found" }, { status: 404 })
         }
+
+        await prisma.job.update({
+            where: { id },
+            data: {
+                status: "closed"
+            }
+        })
+
+        return NextResponse.json({ success: true, message: "Job archived successfully" })
+    } catch (error: any) {
+        console.error("Archive job error:", error)
         return NextResponse.json(
-            { success: false, error: "Failed to delete job" },
+            { success: false, error: "Failed to archive job" },
             { status: 500 }
         )
     }
@@ -49,7 +56,53 @@ export async function PATCH(
             return NextResponse.json({ error: "Job not found" }, { status: 404 })
         }
 
-        const updateData: any = {}
+        // Logic để ngăn chặn gia hạn hoặc chỉnh sửa nếu job đã hết hạn
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Đặt về đầu ngày để so sánh
+
+        const currentExpiredAt = currentJob.expiredAt ? new Date(currentJob.expiredAt) : (currentJob.deadline && currentJob.deadline !== "Vô thời hạn" ? new Date(currentJob.deadline.split("/").reverse().join("-")) : null);
+        if (currentExpiredAt) {
+            currentExpiredAt.setHours(0, 0, 0, 0);
+        }
+
+        const isCurrentlyExpired = currentJob.status === 'expired' || (currentExpiredAt && currentExpiredAt < today);
+        let forceSetPublished = false
+        if (isCurrentlyExpired && updateFields.deadline) {
+            const newDeadlineCandidate = typeof updateFields.deadline === "string"
+                ? (updateFields.deadline.includes("/")
+                    ? new Date(updateFields.deadline.split("/").reverse().join("-"))
+                    : new Date(updateFields.deadline))
+                : updateFields.deadline;
+
+            if (newDeadlineCandidate instanceof Date && !isNaN(newDeadlineCandidate.getTime())) {
+                newDeadlineCandidate.setHours(0, 0, 0, 0);
+                if (newDeadlineCandidate < today) {
+                    return NextResponse.json(
+                        { success: false, error: "Không thể gia hạn hoặc đặt hạn chót trong quá khứ cho tin tuyển dụng đã hết hạn." },
+                        { status: 400 }
+                    );
+                }
+                // Nếu deadline mới hợp lệ và ở tương lai, đánh dấu để chuyển status về published sau
+                forceSetPublished = true
+            } else {
+                return NextResponse.json(
+                    { success: false, error: "Hạn chót mới không hợp lệ." },
+                    { status: 400 }
+                );
+            }
+        } else if (isCurrentlyExpired && !updateFields.deadline) {
+            // Nếu job đã hết hạn và không có deadline mới, không cho phép update (trừ các trường khác không liên quan đến thời gian)
+            // Có thể cho phép update các trường khác nhưng không phải deadline hoặc status
+            // Hiện tại chỉ chặn nếu có ý định thay đổi deadline/status
+            if (updateFields.status && updateFields.status !== currentJob.status && updateFields.status !== 'expired' && updateFields.status !== 'closed') {
+                return NextResponse.json(
+                    { success: false, error: "Không thể thay đổi trạng thái của tin tuyển dụng đã hết hạn mà không gia hạn." },
+                    { status: 400 }
+                );
+            }
+        }
+
+        const updateData: any = {};
 
         if (updateFields.title !== undefined) updateData.title = updateFields.title
         if (updateFields.company !== undefined) updateData.company = updateFields.company
@@ -78,19 +131,52 @@ export async function PATCH(
         }
 
         if (updateFields.deadline !== undefined) {
-            updateData.deadline = updateFields.deadline
+            // Chuẩn hóa định dạng deadline từ frontend
+            let parsedDeadlineDate: Date | null = null;
             if (typeof updateFields.deadline === "string" && updateFields.deadline.trim() !== "") {
-                const parsedDeadline = updateFields.deadline.includes("/")
-                    ? new Date(updateFields.deadline.split("/").reverse().join("-"))
-                    : new Date(updateFields.deadline)
-                updateData.expiredAt = !isNaN(parsedDeadline.getTime()) ? parsedDeadline : null
+                // Kiểm tra nếu là định dạng "dd/MM/yyyy" hoặc "yyyy-MM-dd"
+                if (updateFields.deadline.includes("/")) {
+                    const [day, month, year] = updateFields.deadline.split("/").map(Number);
+                    parsedDeadlineDate = new Date(year, month - 1, day);
+                } else {
+                    parsedDeadlineDate = new Date(updateFields.deadline);
+                }
+            } else if (updateFields.deadline instanceof Date) {
+                parsedDeadlineDate = updateFields.deadline;
+            }
+
+            if (parsedDeadlineDate && !isNaN(parsedDeadlineDate.getTime())) {
+                updateData.deadline = parsedDeadlineDate.toISOString().split('T')[0]; // Lưu dưới dạng YYYY-MM-DD string
+                updateData.expiredAt = parsedDeadlineDate; // Lưu dưới dạng DateTime
+                // Nếu deadline mới ở tương lai, tự động chuyển status về published
+                if (parsedDeadlineDate.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0) && currentJob.status !== 'published') {
+                    forceSetPublished = true
+                }
             } else {
-                updateData.expiredAt = null
+                updateData.deadline = null;
+                updateData.expiredAt = null;
             }
         }
 
         if (updateFields.status !== undefined) {
-            updateData.status = updateFields.status
+            updateData.status = updateFields.status;
+        }
+
+        // Apply force publish flag if set (from deadline logic)
+        if (typeof forceSetPublished !== 'undefined' && forceSetPublished && !updateData.status) {
+            updateData.status = 'published'
+        }
+
+        // If no fields to update, return a clear error to avoid false success
+        if (!updateData || Object.keys(updateData).length === 0) {
+            return NextResponse.json({ success: false, error: "No valid fields to update" }, { status: 400 })
+        }
+
+        // Nếu status được set là 'published' nhưng deadline đã hết hạn, điều chỉnh lại status
+        if (updateData.status === 'published' && updateData.expiredAt) {
+            if (updateData.expiredAt.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0)) {
+                updateData.status = 'expired';
+            }
         }
 
         if (updateFields.adminFeedback !== undefined) {
@@ -118,7 +204,7 @@ export async function PATCH(
 
         // Do not override publish date when status changes
 
-        await prisma.job.update({
+        const updatedJob = await prisma.job.update({
             where: { id },
             data: updateData
         })
@@ -166,7 +252,7 @@ export async function PATCH(
         revalidatePath("/")
         revalidatePath("/dashboard/my-jobs")
 
-        return NextResponse.json({ success: true, message: "Job updated successfully" })
+        return NextResponse.json({ success: true, message: "Job updated successfully", data: { ...updatedJob, _id: updatedJob.id } })
     } catch (error) {
         console.error("Update job error:", error)
         return NextResponse.json(

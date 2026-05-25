@@ -15,6 +15,16 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
@@ -45,6 +55,7 @@ export default function PartnerManagementPage() {
     // Dialog states
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [partnerToDelete, setPartnerToDelete] = useState<string | null>(null)
+    const [migrateDialogOpen, setMigrateDialogOpen] = useState(false)
 
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [editingPartner, setEditingPartner] = useState<any>(null)
@@ -85,8 +96,6 @@ export default function PartnerManagementPage() {
     }
 
     const handleMigrate = async () => {
-        if (!confirm("Hành động này sẽ reset danh sách đối tác về mặc định. Bạn có chắc chắn?")) return
-
         setIsMigrating(true)
         try {
             const res = await fetch('/api/companies/seed')
@@ -197,7 +206,7 @@ export default function PartnerManagementPage() {
                     <p className="text-muted-foreground mt-1 text-sm sm:text-base">Quản lý các doanh nghiệp liên kết với nhà trường</p>
                 </div>
                 <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
-                    <Button variant="outline" onClick={handleMigrate} disabled={isMigrating} className="w-full sm:w-auto text-xs sm:text-sm">
+                    <Button variant="outline" onClick={() => setMigrateDialogOpen(true)} disabled={isMigrating} className="w-full sm:w-auto text-xs sm:text-sm">
                         <RefreshCw className={`h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2 ${isMigrating ? 'animate-spin' : ''}`} />
                         Mặc định
                     </Button>
@@ -374,6 +383,30 @@ export default function PartnerManagementPage() {
                     </div>
                 </CardContent>
             </Card>
+
+            <AlertDialog open={migrateDialogOpen} onOpenChange={setMigrateDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Khôi phục danh sách mặc định?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Thao tác này sẽ reset danh sách đối tác về dữ liệu mặc định của hệ thống.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Hủy</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={(event) => {
+                                event.preventDefault()
+                                setMigrateDialogOpen(false)
+                                handleMigrate()
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Khôi phục
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

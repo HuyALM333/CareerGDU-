@@ -23,8 +23,18 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Textarea } from "@/components/ui/textarea"
-import { Check, X, Loader2, Trash2, Eye, Pencil } from "lucide-react"
+import { Check, X, Loader2, Archive, Eye, Pencil } from "lucide-react"
 import { JobPreviewDialog, type Job } from "./job-preview-dialog"
 
 // Types matching API response
@@ -36,6 +46,8 @@ export default function AdminJobsPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
     const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [jobToDelete, setJobToDelete] = useState<Job | null>(null)
     const [previewJob, setPreviewJob] = useState<Job | null>(null)
     const [previewLoading, setPreviewLoading] = useState(false)
     const [feedback, setFeedback] = useState("")
@@ -145,30 +157,40 @@ export default function AdminJobsPage() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Bạn có chắc chắn muốn xóa tin tuyển dụng này không? Hành động này không thể hoàn tác.")) return
+    const openDeleteDialog = (job: Job) => {
+        setJobToDelete(job)
+        setDeleteDialogOpen(true)
+    }
+
+    const handleArchive = async () => {
+        if (!jobToDelete) return
 
         try {
-            const response = await fetch(`/api/jobs/${id}`, {
-                method: 'DELETE'
+            const response = await fetch(`/api/jobs/${jobToDelete._id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'closed' })
             })
             const data = await response.json()
 
             if (data.success) {
                 toast({
-                    title: "Xóa thành công",
-                    description: "Tin tuyển dụng đã được xóa khỏi hệ thống.",
+                    title: "Đã lưu trữ",
+                    description: "Tin tuyển dụng đã được gỡ khỏi danh sách hiển thị nhưng vẫn được giữ trong hệ thống.",
                 })
-                setJobs(prev => prev.filter(job => job._id !== id))
+                setJobs(prev => prev.map(job => job._id === jobToDelete._id ? { ...job, status: 'closed' as any } : job))
             } else {
                 throw new Error(data.error)
             }
         } catch (error) {
             toast({
-                title: "Lỗi xóa tin",
-                description: "Không thể xóa tin tuyển dụng.",
+                title: "Lỗi lưu trữ",
+                description: "Không thể gỡ tin tuyển dụng.",
                 variant: "destructive"
             })
+        } finally {
+            setDeleteDialogOpen(false)
+            setJobToDelete(null)
         }
     }
 
@@ -325,15 +347,15 @@ export default function AdminJobsPage() {
                                                             </Button>
                                                         )}
 
-                                                        {(job.status === 'rejected' || job.status === 'closed' || job.status === 'request_changes') && (
+                                                        {(job.status === 'rejected' || job.status === 'request_changes') && (
                                                             <Button
                                                                 size="sm"
                                                                 variant="ghost"
                                                                 className="h-9 w-9 p-0 text-gray-400 hover:text-red-600 hover:bg-red-50"
-                                                                onClick={() => handleDelete(job._id)}
-                                                                title="Xóa vĩnh viễn"
+                                                                onClick={() => openDeleteDialog(job)}
+                                                                title="Gỡ bài / Lưu trữ"
                                                             >
-                                                                <Trash2 className="h-4.5 w-4.5" />
+                                                                <Archive className="h-4.5 w-4.5" />
                                                             </Button>
                                                         )}
                                                     </div>
@@ -423,14 +445,14 @@ export default function AdminJobsPage() {
                                                     </Button>
                                                 )}
 
-                                                {(job.status === 'rejected' || job.status === 'closed' || job.status === 'request_changes') && (
+                                                {(job.status === 'rejected' || job.status === 'request_changes') && (
                                                     <Button
                                                         size="sm"
                                                         variant="ghost"
                                                         className="h-9 px-4 text-red-500 font-medium"
-                                                        onClick={() => handleDelete(job._id)}
+                                                        onClick={() => openDeleteDialog(job)}
                                                     >
-                                                        <Trash2 className="h-4 w-4 mr-1.5" /> Xóa
+                                                        <Archive className="h-4 w-4 mr-1.5" /> Lưu trữ
                                                     </Button>
                                                 )}
                                             </div>
@@ -478,6 +500,29 @@ export default function AdminJobsPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Xác nhận gỡ bài</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Tin tuyển dụng <span className="font-semibold text-foreground">{jobToDelete?.title}</span> sẽ được gỡ khỏi danh sách hiển thị và chuyển sang trạng thái lưu trữ. Dữ liệu vẫn được giữ lại để audit và quản lý.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Hủy</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={(event) => {
+                                event.preventDefault()
+                                handleArchive()
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Gỡ bài
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             <JobPreviewDialog
                 job={previewJob}

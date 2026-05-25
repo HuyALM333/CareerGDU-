@@ -23,8 +23,10 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ date, setDate, placeholder = "Chọn ngày", className, disabled }: DatePickerProps) {
+    const [open, setOpen] = React.useState(false)
+
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild disabled={disabled}>
                 <Button
                     variant={"outline"}
@@ -44,7 +46,12 @@ export function DatePicker({ date, setDate, placeholder = "Chọn ngày", classN
                 <Calendar
                     mode="single"
                     selected={date}
-                    onSelect={setDate}
+                    onSelect={(selectedDate) => {
+                        setDate(selectedDate)
+                        if (selectedDate) {
+                            setOpen(false)
+                        }
+                    }}
                     initialFocus
                     locale={vi}
                 />

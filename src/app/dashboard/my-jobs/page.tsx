@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { DatePicker } from "@/components/ui/date-picker"
 import { Badge } from "@/components/ui/badge"
 import { Search, Plus, Filter, MoreHorizontal, Edit, Trash2, Eye, FileText, Users, RefreshCw } from "lucide-react"
 import Link from "next/link"
@@ -419,11 +420,11 @@ export default function MyJobsPage() {
                     <div className="py-4 space-y-4">
                         <div className="grid gap-2">
                             <label className="text-sm font-medium">Hạn chót mới</label>
-                            <Input
-                                type="date"
-                                value={newDeadline}
-                                min={new Date().toISOString().split('T')[0]}
-                                onChange={(e) => setNewDeadline(e.target.value)}
+                            <DatePicker
+                                date={newDeadline ? new Date(newDeadline) : undefined}
+                                setDate={(date) => setNewDeadline(date ? date.toISOString().split('T')[0] : "")}
+                                placeholder="Chọn ngày hết hạn mới"
+                                minDate={new Date()} // Ensure minimum date is today or in the future
                             />
                         </div>
                     </div>

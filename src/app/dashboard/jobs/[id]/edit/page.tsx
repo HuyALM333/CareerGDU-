@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
@@ -143,7 +143,9 @@ const formSchema = z.object({
     path: ["quantity"],
 })
 
-export default function EditJobPage({ params }: { params: { id: string } }) {
+export default function EditJobPage() {
+    const params = useParams()
+    const id = params?.id as string
     const { user } = useAuth()
     const router = useRouter()
     const { toast } = useToast()
@@ -233,7 +235,7 @@ export default function EditJobPage({ params }: { params: { id: string } }) {
     useEffect(() => {
         const fetchJob = async () => {
             try {
-                const res = await fetch(`/api/jobs/${params.id}`)
+                const res = await fetch(`/api/jobs/${id}`)
                 const data = await res.json()
 
                 if (data.success && data.data) {
@@ -296,7 +298,7 @@ export default function EditJobPage({ params }: { params: { id: string } }) {
         }
 
         fetchJob()
-    }, [params.id, form, router, toast])
+    }, [id, form, router, toast])
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         // Validate logo is required
@@ -390,7 +392,7 @@ export default function EditJobPage({ params }: { params: { id: string } }) {
                 logo: logoBase64,
             }
 
-            const response = await fetch(`/api/jobs/${params.id}`, {
+            const response = await fetch(`/api/jobs/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),

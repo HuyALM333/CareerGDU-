@@ -20,6 +20,16 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -58,6 +68,8 @@ export default function AdminNewsPage() {
     const [isQuickPostOpen, setIsQuickPostOpen] = useState(false)
     const [quickPostUrl, setQuickPostUrl] = useState("")
     const [isFetchingMetadata, setIsFetchingMetadata] = useState(false)
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [newsToDelete, setNewsToDelete] = useState<string | null>(null)
 
     const handleQuickPost = async () => {
         if (!quickPostUrl) {
@@ -232,8 +244,6 @@ export default function AdminNewsPage() {
             toast({ title: "Từ chối", description: "Chỉ Admin mới có quyền xóa", variant: "destructive" })
             return
         }
-        if (!confirm("Bạn có chắc chắn muốn xóa bài viết này?")) return
-
         try {
             const res = await fetch(`/api/news?id=${id}`, { method: "DELETE" })
             if (res.ok) {
@@ -388,7 +398,10 @@ export default function AdminNewsPage() {
                                                 }}>
                                                     <Edit2 className="h-4 w-4" />
                                                 </Button>
-                                                <Button size="icon" variant="destructive" className="h-8 w-8 rounded-full" onClick={() => handleDelete(item._id!)}>
+                                                <Button size="icon" variant="destructive" className="h-8 w-8 rounded-full" onClick={() => {
+                                                    setNewsToDelete(item._id!)
+                                                    setDeleteDialogOpen(true)
+                                                }}>
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>
@@ -637,6 +650,33 @@ export default function AdminNewsPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Xác nhận xóa bài viết</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Bài viết này sẽ bị xóa khỏi hệ thống và không thể khôi phục.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Hủy</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={(event) => {
+                                event.preventDefault()
+                                if (newsToDelete) {
+                                    handleDelete(newsToDelete)
+                                }
+                                setDeleteDialogOpen(false)
+                                setNewsToDelete(null)
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Xóa
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {/* Quick Post Dialog */}
             <Dialog open={isQuickPostOpen} onOpenChange={setIsQuickPostOpen}>

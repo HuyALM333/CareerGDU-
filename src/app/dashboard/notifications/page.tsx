@@ -8,6 +8,16 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Empty, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/lib/auth-context"
 
@@ -51,6 +61,7 @@ function formatRelativeTime(isoString: string): string {
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleteAllOpen, setDeleteAllOpen] = useState(false)
   const { toast } = useToast()
   const { user } = useAuth()
 
@@ -156,8 +167,6 @@ export default function NotificationsPage() {
     const userId = user?.id || (user as any)?._id
     if (!userId) return
 
-    if (!confirm("Bạn có chắc chắn muốn xóa tất cả thông báo không?")) return
-
     try {
       const response = await fetch(`/api/notifications?action=delete_all&userId=${userId}&role=${user?.role || ''}`, {
         method: "DELETE"
@@ -220,7 +229,7 @@ export default function NotificationsPage() {
             </Button>
           )}
           {notifications.length > 0 && (
-            <Button variant="outline" onClick={deleteAllNotifications} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+            <Button variant="outline" onClick={() => setDeleteAllOpen(true)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
               <Trash2 className="h-4 w-4 mr-2" />
               Xóa tất cả
             </Button>
@@ -292,6 +301,30 @@ export default function NotificationsPage() {
           })}
         </div>
       )}
+
+      <AlertDialog open={deleteAllOpen} onOpenChange={setDeleteAllOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận xóa tất cả thông báo</AlertDialogTitle>
+            <AlertDialogDescription>
+              Toàn bộ thông báo sẽ bị xóa khỏi tài khoản của bạn. Hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault()
+                setDeleteAllOpen(false)
+                deleteAllNotifications()
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Xóa tất cả
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
