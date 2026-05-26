@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import prisma from "@/database/prisma"
+import { revalidatePath } from "next/cache"
 
 export async function PATCH(
     req: Request,
@@ -10,7 +11,26 @@ export async function PATCH(
         const body = await req.json()
         const { status, adminFeedback } = body
 
-        const allowedStatus = ["published", "scheduled", "rejected", "pending"]
+        const { cookies } = await import("next/headers")
+        const { decrypt } = await import("@/lib/session")
+        const cookie = (await cookies()).get("session")?.value
+        const session = await decrypt(cookie)
+
+        if (!session?.userId) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            )
+        }
+
+        if (session.role !== "admin") {
+            return NextResponse.json(
+                { error: "Forbidden" },
+                { status: 403 }
+            )
+        }
+
+        const allowedStatus = ["published", "scheduled", "rejected", "pending", "closed"]
 
         if (!status || !allowedStatus.includes(status)) {
             return NextResponse.json(
@@ -62,6 +82,11 @@ export async function PATCH(
             data
         })
 
+        revalidatePath("/jobs/" + id)
+        revalidatePath("/")
+        revalidatePath("/dashboard/jobs")
+        revalidatePath("/dashboard/my-jobs")
+
         // ✅ tạo notification (không cần cho pending)
         if (data.status !== "pending") {
             let title = ""
@@ -80,6 +105,11 @@ export async function PATCH(
             if (data.status === "rejected") {
                 title = "Tin tuyển dụng bị từ chối"
                 message = `Tin "${job.title}" bị từ chối. Lý do: ${adminFeedback || "Không có"}`
+            }
+
+            if (data.status === "closed") {
+                title = "Tin tuyển dụng đã bị gỡ"
+                message = `Tin "${job.title}" đã bị gỡ khỏi hệ thống hiển thị.`
             }
 
             await prisma.notification.create({

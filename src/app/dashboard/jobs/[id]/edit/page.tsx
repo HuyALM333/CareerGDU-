@@ -233,6 +233,17 @@ export default function EditJobPage() {
     }
 
     useEffect(() => {
+        if (!user) return
+        if (user.role !== "employer") {
+            toast({
+                title: "Không có quyền",
+                description: "Admin không thể chỉnh sửa nội dung tin tuyển dụng.",
+                variant: "destructive",
+            })
+            router.push("/dashboard")
+            return
+        }
+
         const fetchJob = async () => {
             try {
                 const res = await fetch(`/api/jobs/${id}`)
@@ -240,6 +251,17 @@ export default function EditJobPage() {
 
                 if (data.success && data.data) {
                     const job = data.data
+
+                    const ownerId = user?.id || user?._id
+                    if (job.creatorId && ownerId && job.creatorId !== ownerId) {
+                        toast({
+                            title: "Không có quyền",
+                            description: "Bạn không được chỉnh sửa tin tuyển dụng này.",
+                            variant: "destructive",
+                        })
+                        router.push("/dashboard/my-jobs")
+                        return
+                    }
 
                     const knownFields = Object.keys(FIELDS_AND_MAJORS)
                     const resolvedField = knownFields.includes(job.field) ? job.field : "Khác"
@@ -297,8 +319,8 @@ export default function EditJobPage() {
             }
         }
 
-        fetchJob()
-    }, [id, form, router, toast])
+        if (id) fetchJob()
+    }, [id, form, router, toast, user])
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         // Validate logo is required

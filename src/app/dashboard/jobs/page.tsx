@@ -34,7 +34,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Textarea } from "@/components/ui/textarea"
-import { Check, X, Loader2, Archive, Eye, Pencil } from "lucide-react"
+import { Check, X, Loader2, Archive, Eye } from "lucide-react"
 import { JobPreviewDialog, type Job } from "./job-preview-dialog"
 
 // Types matching API response
@@ -166,7 +166,7 @@ export default function AdminJobsPage() {
         if (!jobToDelete) return
 
         try {
-            const response = await fetch(`/api/jobs/${jobToDelete._id}`, {
+            const response = await fetch(`/api/jobs/${jobToDelete._id}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'closed' })
@@ -301,15 +301,6 @@ export default function AdminJobsPage() {
                                                         >
                                                             <Eye className="h-4.5 w-4.5" />
                                                         </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="ghost"
-                                                            className="h-9 w-9 p-0 text-amber-600 hover:text-amber-800 hover:bg-amber-50"
-                                                            onClick={() => router.push(`/dashboard/jobs/${job._id}/edit`)}
-                                                            title="Chỉnh sửa"
-                                                        >
-                                                            <Pencil className="h-4 w-4" />
-                                                        </Button>
                                                     </div>
 
                                                     {/* Slot 2: Action buttons */}
@@ -341,7 +332,7 @@ export default function AdminJobsPage() {
                                                                 size="sm"
                                                                 variant="outline"
                                                                 className="h-8 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 text-xs"
-                                                                onClick={() => openRejectDialog(job._id)}
+                                                                onClick={() => openDeleteDialog(job)}
                                                             >
                                                                 Gỡ bài
                                                             </Button>
@@ -403,14 +394,6 @@ export default function AdminJobsPage() {
                                                 >
                                                     <Eye className="h-4 w-4" />
                                                 </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="h-9 px-3 text-amber-600 font-bold"
-                                                    onClick={() => router.push(`/dashboard/jobs/${job._id}/edit`)}
-                                                >
-                                                    <Pencil className="h-4 w-4" />
-                                                </Button>
                                             </div>
 
                                             <div className="flex items-center gap-2">
@@ -439,7 +422,7 @@ export default function AdminJobsPage() {
                                                         size="sm"
                                                         variant="outline"
                                                         className="h-9 px-4 text-red-600 border-red-200 font-bold"
-                                                        onClick={() => openRejectDialog(job._id)}
+                                                        onClick={() => openDeleteDialog(job)}
                                                     >
                                                         Gỡ bài
                                                     </Button>
@@ -468,7 +451,7 @@ export default function AdminJobsPage() {
             <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Từ chối / Gỡ bài tuyển dụng</DialogTitle>
+                        <DialogTitle>Từ chối tin tuyển dụng</DialogTitle>
                         <DialogDescription>
                             Vui lòng nhập lý do từ chối <span className="text-red-500 font-bold">*</span> để nhà tuyển dụng biết và chỉnh sửa.
                         </DialogDescription>

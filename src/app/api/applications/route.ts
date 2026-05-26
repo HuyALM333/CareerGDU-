@@ -305,29 +305,18 @@ export async function GET(request: Request) {
     // ===== ROLE LOGIC =====
     if (userRole === "admin") {
       // Admin thấy tất cả
-    } 
+    }
     else if (userRole === "employer") {
-    // Employer thấy application thuộc job mình tạo
-    where.job = {
-      is: {
-        creatorId: userId
+      // Employer thấy application thuộc job mình tạo
+      where.job = {
+        is: {
+          creatorId: userId
+        }
       }
     }
-  }
     else {
       // Student: lấy theo userId (FIX ISSUE 3)
-      const currentUser = await prisma.user.findUnique({
-        where: { id: userId }
-      })
-
-      if (!currentUser) {
-        return NextResponse.json({ success: true, data: [] })
-      }
-
-      where.OR = [
-        { userId: userId },                 // ✅ FIX CHÍNH
-        { email: currentUser.email }        // fallback
-      ]
+      where.userId = userId
     }
 
     // ===== FILTER THEO JOB =====

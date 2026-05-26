@@ -33,9 +33,11 @@ export function StudentDashboardContent() {
 
     useEffect(() => {
         const fetchApps = async () => {
-            if (user?.email) {
+            if (user?.id) {
+                setLoading(true)
+                setApplications([])
                 try {
-                    const res = await fetch(`/api/applications?role=student&email=${user.email}`)
+                    const res = await fetch(`/api/applications`)
                     const data = await res.json()
                     if (data.success) {
                         setApplications(data.data)
@@ -45,6 +47,9 @@ export function StudentDashboardContent() {
                 } finally {
                     setLoading(false)
                 }
+            } else {
+                setApplications([])
+                setLoading(false)
             }
         }
         fetchApps()

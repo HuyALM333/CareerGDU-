@@ -10,12 +10,31 @@ export async function DELETE(
     try {
         const { id } = params
 
+        const { cookies } = await import("next/headers")
+        const { decrypt } = await import("@/lib/session")
+        const cookie = (await cookies()).get("session")?.value
+        const session = await decrypt(cookie)
+
+        if (!session?.userId) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized" },
+                { status: 401 }
+            )
+        }
+
         const currentJob = await prisma.job.findUnique({
             where: { id }
         })
 
         if (!currentJob) {
             return NextResponse.json({ error: "Job not found" }, { status: 404 })
+        }
+
+        if (session.role !== "admin" && currentJob.creatorId !== session.userId) {
+            return NextResponse.json(
+                { success: false, error: "Forbidden" },
+                { status: 403 }
+            )
         }
 
         await prisma.job.update({
@@ -44,6 +63,25 @@ export async function PATCH(
         const { id } = params
         const body = await req.json()
 
+        const { cookies } = await import("next/headers")
+        const { decrypt } = await import("@/lib/session")
+        const cookie = (await cookies()).get("session")?.value
+        const session = await decrypt(cookie)
+
+        if (!session?.userId) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized" },
+                { status: 401 }
+            )
+        }
+
+        if (session.role === "admin") {
+            return NextResponse.json(
+                { success: false, error: "Admin cannot edit job content" },
+                { status: 403 }
+            )
+        }
+
         // Filter fields to safeguard
         const { _id, creatorId, id: bodyId, ...updateFields } = body
 
@@ -54,6 +92,13 @@ export async function PATCH(
 
         if (!currentJob) {
             return NextResponse.json({ error: "Job not found" }, { status: 404 })
+        }
+
+        if (currentJob.creatorId !== session.userId) {
+            return NextResponse.json(
+                { success: false, error: "Forbidden" },
+                { status: 403 }
+            )
         }
 
         // Logic để ngăn chặn gia hạn hoặc chỉnh sửa nếu job đã hết hạn
@@ -249,6 +294,7 @@ export async function PATCH(
 
         // Revalidate paths to refresh cache
         revalidatePath("/jobs/" + id)
+        revalidatePath("/jobs")
         revalidatePath("/")
         revalidatePath("/dashboard/my-jobs")
 
